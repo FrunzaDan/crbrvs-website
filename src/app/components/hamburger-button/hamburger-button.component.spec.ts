@@ -1,0 +1,47 @@
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { HamburgerButtonComponent } from './hamburger-button.component';
+
+describe('HamburgerButtonComponent', () => {
+  let fixture: ComponentFixture<HamburgerButtonComponent>;
+  let component: HamburgerButtonComponent;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [HamburgerButtonComponent],
+    });
+
+    fixture = TestBed.createComponent(HamburgerButtonComponent);
+    component = fixture.componentInstance;
+  });
+
+  it('defaults isOpen to false', () => {
+    fixture.detectChanges();
+
+    expect(component.isOpen()).toBe(false);
+  });
+
+  it('emits true when toggled while closed', () => {
+    fixture.componentRef.setInput('isOpen', false);
+    fixture.detectChanges();
+
+    let emitted: boolean | undefined;
+    component.toggleMenu.subscribe((value) => (emitted = value));
+
+    component.toggleNavbar();
+
+    expect(emitted).toBe(true);
+  });
+
+  it('emits false when toggled while open', () => {
+    fixture.componentRef.setInput('isOpen', true);
+    fixture.detectChanges();
+
+    let emitted: boolean | undefined;
+    component.toggleMenu.subscribe((value) => (emitted = value));
+
+    component.toggleNavbar();
+
+    expect(emitted).toBe(false);
+  });
+});
