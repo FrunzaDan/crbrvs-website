@@ -19,19 +19,38 @@
   border: 0.2rem solid var(--main-second-color);
   margin: 0.2rem 0 0.6rem;
   object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.artwork.playing {
+  animation: artwork-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes artwork-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.03);
+  }
 }
 
 .player-controls {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
+  gap: 0.5rem;
   width: 100%;
-  max-width: 200px;
   margin-top: 1rem;
 }
 
 .action-btn-play {
   background-image: url('/assets/MusicPlayer/play-button-svgrepo-com.svg');
+}
+
+.action-btn-pause {
+  background-image: url('/assets/MusicPlayer/pause-button-svgrepo-com.svg');
 }
 
 .action-btn-stop {
@@ -71,6 +90,14 @@ progress[value] {
   border: none;
   border-radius: 0.5rem;
   background-color: var(--background);
+  cursor: pointer;
+  touch-action: none;
+  transition: height 0.15s ease;
+}
+
+progress[value]:hover,
+progress[value].dragging {
+  height: 0.7rem;
 }
 
 progress[value]::-webkit-progress-bar {
@@ -84,15 +111,37 @@ progress[value]::-webkit-progress-value {
   transition: width 0.1s ease;
 }
 
+progress[value].dragging::-webkit-progress-value {
+  transition: none;
+}
+
 progress[value]::-moz-progress-bar {
   background-color: var(--color);
   border-radius: 0.5rem;
   transition: width 0.1s ease;
 }
 
+progress[value].dragging::-moz-progress-bar {
+  transition: none;
+}
+
+.scrub-indicator {
+  align-self: center;
+  margin-top: -0.25rem;
+  padding: 0.15rem 0.6rem;
+  border-radius: 1rem;
+  background-color: var(--main-second-color);
+  color: var(--main-light-color);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.03rem;
+}
+
 .player-controls-btn {
   background-color: var(--main-second-color);
   border: none;
+  margin: 0;
+  flex-shrink: 0;
   cursor: pointer;
   padding: 0.5rem;
   transition: transform 0.2s ease;
@@ -104,4 +153,19 @@ progress[value]::-moz-progress-bar {
 
 .player-controls-btn:active {
   transform: scale(0.95);
+}
+
+.player-controls-btn.scrubbing {
+  transform: scale(0.95);
+  background-color: var(--main-first-color);
+}
+
+.player-controls-btn.scrubbing .player-action-icon {
+  filter: invert(1);
+}
+
+.player-controls-btn:disabled {
+  cursor: default;
+  opacity: 0.4;
+  transform: none;
 }
