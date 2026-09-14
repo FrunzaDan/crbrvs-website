@@ -1,5 +1,10 @@
 import { ViewportScroller } from '@angular/common';
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  signal,
+} from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { HamburgerButtonComponent } from '../hamburger-button/hamburger-button.component';
 
@@ -11,12 +16,10 @@ import { HamburgerButtonComponent } from '../hamburger-button/hamburger-button.c
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NavbarComponent {
-  isMenuOpen = signal(false);
+  private readonly viewportScroller = inject(ViewportScroller);
+  private readonly router = inject(Router);
 
-  constructor(
-    private viewportScroller: ViewportScroller,
-    private router: Router,
-  ) {}
+  isMenuOpen = signal(false);
 
   public scrollToSection(elementId: string): void {
     if (!elementId) {
@@ -25,6 +28,7 @@ export class NavbarComponent {
     }
     this.viewportScroller.scrollToAnchor(elementId);
     this.router.navigate([], { fragment: elementId });
+    this.closeMenu();
   }
 
   onToggleMenu(isOpen: boolean) {

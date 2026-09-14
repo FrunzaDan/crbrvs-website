@@ -1,7 +1,7 @@
 <button
   (click)="scrollerService.scrollToTop()"
   id="scroll-to-top-btn"
-  [@slide]="shouldShowBackToTopButton ? 'visible' : 'hidden'"
+  [class.visible]="shouldShowBackToTopButton()"
 >
   &#8593;
 </button>

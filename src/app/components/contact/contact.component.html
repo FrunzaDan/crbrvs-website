@@ -134,10 +134,10 @@
             <button class="w-100 my-2" type="submit">Send message!</button>
           </div>
         </form>
-        @if (isEmailModalOpen) {
-        <div class="send-email-modal" @transformIn @transformOut>
-          <h2 id="email-popup-text-header">{{ emailPopUpHeader }}</h2>
-          <p id="email-popup-text-paragraph">{{ emailPopUpParagraph }}</p>
+        @if (isEmailModalOpen()) {
+        <div class="send-email-modal" animate.leave="leaving">
+          <h2 id="email-popup-text-header">{{ emailPopUpHeader() }}</h2>
+          <p id="email-popup-text-paragraph">{{ emailPopUpParagraph() }}</p>
           <button type="submit" class="w-100" (click)="closeEmailModal()">
             OK
           </button>

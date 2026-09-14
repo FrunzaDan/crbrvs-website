@@ -81,7 +81,7 @@
   position: fixed;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%) scale(1);
   padding: 1rem;
   border-radius: 1.4rem;
   width: 60%;
@@ -90,6 +90,16 @@
   box-shadow: 0 0 20px 1px rgba(0, 0, 0, 0.5);
   color: var(--main-first-color);
   border: 0.2rem solid var(--main-first-color);
+  transition: transform 300ms ease-in;
+
+  @starting-style {
+    transform: translate(-50%, -50%) scale(0);
+  }
+}
+
+.get-merch-modal.leaving {
+  transform: translate(-50%, -50%) scale(0);
+  transition: transform 300ms ease-out;
 }
 
 .customModal-header {

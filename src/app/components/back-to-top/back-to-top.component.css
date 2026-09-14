@@ -14,13 +14,18 @@
   padding-left: 6px;
   padding-right: 6px;
   border-radius: 8px;
-  transition: all 0.2s;
   box-shadow: 4px 4px var(--main-second-color);
   border: 0.1px solid var(--main-second-color);
   text-align: center;
   pointer-events: auto;
-  bottom: '1rem';
-  right: '1rem';
+  bottom: -3rem;
+  right: -3rem;
+  transition: bottom 300ms, right 300ms;
+}
+
+#scroll-to-top-btn.visible {
+  bottom: 1rem;
+  right: 1rem;
 }
 
 #scroll-to-top-btn:active {

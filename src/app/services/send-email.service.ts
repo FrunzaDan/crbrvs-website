@@ -7,8 +7,6 @@ import { ContactMeForm } from '../interfaces/contact-me-form';
   providedIn: 'root',
 })
 export class SendEmailService {
-  constructor() {}
-
   sendEmailJS(contactMeForm: ContactMeForm): Promise<number> {
     const params = {
       name: contactMeForm.name,

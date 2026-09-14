@@ -24,6 +24,7 @@
             class="merch-img"
             [src]="merchItem.src"
             alt="CRBRVS merch item"
+            loading="lazy"
           />
           <div class="p-2">
             <h4 class="pink-color">{{ merchItem.title }}</h4>
@@ -53,12 +54,11 @@
 @if (isMerchModalOpen()) {
 <div
   class="full-view-background"
-  @fadeIn
-  @fadeOut
+  animate.leave="leaving"
   (click)="closeMerchItemModal()"
 ></div>
 
-<div class="get-merch-modal" @transformIn @transformOut>
+<div class="get-merch-modal" animate.leave="leaving">
   <div class="customModal-header">
     <h1>What's this {{ selectedMerchItem()?.title }}?</h1>
     <button (click)="closeMerchItemModal()" class="close-button">

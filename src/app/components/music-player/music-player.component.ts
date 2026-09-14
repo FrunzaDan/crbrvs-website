@@ -1,4 +1,10 @@
-import { Component, OnDestroy, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  OnDestroy,
+  OnInit,
+  inject,
+  signal,
+} from '@angular/core';
 import { Song } from '../../interfaces/song';
 import { LoadMusicService } from '../../services/load-music.service';
 
@@ -9,6 +15,8 @@ import { LoadMusicService } from '../../services/load-music.service';
   styleUrl: './music-player.component.css',
 })
 export class MusicPlayerComponent implements OnInit, OnDestroy {
+  private readonly loadMusicService = inject(LoadMusicService);
+
   songs = signal<Song[]>([]);
   currentSong = signal<Song | null>(null);
   isPlaying = signal<boolean>(false);
@@ -19,7 +27,20 @@ export class MusicPlayerComponent implements OnInit, OnDestroy {
   private audio: HTMLAudioElement | null = null;
   private progressInterval: number | null = null;
 
-  constructor(private loadMusicService: LoadMusicService) {}
+  private readonly onLoadedMetadata = () => {
+    if (this.audio) {
+      this.currentAudioDuration.set(Math.ceil(this.audio.duration));
+    }
+  };
+
+  private readonly onEnded = () => {
+    this.playNextSong();
+  };
+
+  private readonly onError = (e: Event) => {
+    console.error('Audio loading error:', e);
+    this.isPlaying.set(false);
+  };
 
   ngOnInit(): void {
     const loadedSongs = this.loadMusicService.loadMusic();
@@ -45,20 +66,9 @@ export class MusicPlayerComponent implements OnInit, OnDestroy {
       this.cleanup(); // Clean up previous audio instance
       this.audio = new Audio(this.currentSong()!.src);
 
-      this.audio.addEventListener('loadedmetadata', () => {
-        if (this.audio) {
-          this.currentAudioDuration.set(Math.ceil(this.audio.duration));
-        }
-      });
-
-      this.audio.addEventListener('ended', () => {
-        this.playNextSong();
-      });
-
-      this.audio.addEventListener('error', (e) => {
-        console.error('Audio loading error:', e);
-        this.isPlaying.set(false);
-      });
+      this.audio.addEventListener('loadedmetadata', this.onLoadedMetadata);
+      this.audio.addEventListener('ended', this.onEnded);
+      this.audio.addEventListener('error', this.onError);
     }
   }
 
@@ -140,6 +150,9 @@ export class MusicPlayerComponent implements OnInit, OnDestroy {
 
   private cleanup(): void {
     if (this.audio) {
+      this.audio.removeEventListener('loadedmetadata', this.onLoadedMetadata);
+      this.audio.removeEventListener('ended', this.onEnded);
+      this.audio.removeEventListener('error', this.onError);
       this.audio.pause();
       this.audio.src = '';
       this.audio.load();

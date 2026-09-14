@@ -1,9 +1,8 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  EventEmitter,
-  Input,
-  Output,
+  input,
+  output,
 } from '@angular/core';
 
 @Component({
@@ -13,10 +12,10 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HamburgerButtonComponent {
-  @Input() isOpen = false;
-  @Output() toggleMenu = new EventEmitter<boolean>();
+  isOpen = input(false);
+  toggleMenu = output<boolean>();
 
   toggleNavbar() {
-    this.toggleMenu.emit(!this.isOpen);
+    this.toggleMenu.emit(!this.isOpen());
   }
 }

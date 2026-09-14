@@ -1,11 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import {
   FormControl,
   FormGroup,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { transformIn, transformOut } from '../../animations';
 import { SendEmailService } from '../../services/send-email.service';
 import { ContactMeForm } from '../../interfaces/contact-me-form';
 
@@ -14,15 +13,14 @@ import { ContactMeForm } from '../../interfaces/contact-me-form';
   imports: [ReactiveFormsModule],
   templateUrl: './contact.component.html',
   styleUrl: './contact.component.css',
-  animations: [transformIn, transformOut],
 })
 export class ContactComponent {
-  isEmailModalOpen = false;
-  emailPopUpHeader = '';
-  emailPopUpParagraph = '';
-  submitted = false;
+  private readonly sendEmailService = inject(SendEmailService);
 
-  constructor(private sendEmailService: SendEmailService) {}
+  isEmailModalOpen = signal(false);
+  emailPopUpHeader = signal('');
+  emailPopUpParagraph = signal('');
+  submitted = signal(false);
 
   contactMeForm = new FormGroup({
     name: new FormControl('', [Validators.required]),
@@ -41,19 +39,19 @@ export class ContactComponent {
   }
 
   get isNameInvalid(): boolean {
-    return !!(this.submitted && this.name?.errors);
+    return !!(this.submitted() && this.name?.errors);
   }
 
   get isEmailInvalid(): boolean {
-    return !!(this.submitted && this.email?.errors);
+    return !!(this.submitted() && this.email?.errors);
   }
 
   get isMessageInvalid(): boolean {
-    return !!(this.submitted && this.from_message?.errors);
+    return !!(this.submitted() && this.from_message?.errors);
   }
 
   async onSubmit() {
-    this.submitted = true;
+    this.submitted.set(true);
 
     if (this.contactMeForm.invalid) {
       // Mark all fields as touched to trigger validation display
@@ -64,9 +62,9 @@ export class ContactComponent {
       return;
     }
 
-    this.isEmailModalOpen = true;
-    this.emailPopUpHeader = 'Hi, ' + this.contactMeForm.value.name;
-    this.emailPopUpParagraph = 'Sending...';
+    this.isEmailModalOpen.set(true);
+    this.emailPopUpHeader.set('Hi, ' + this.contactMeForm.value.name);
+    this.emailPopUpParagraph.set('Sending...');
 
     try {
       const responseCode = await this.sendEmailService.sendEmailJS(
@@ -86,15 +84,17 @@ export class ContactComponent {
   }
 
   private handleSuccessfulSubmission(): void {
-    this.emailPopUpParagraph = 'Your message was successfully sent! ';
+    this.emailPopUpParagraph.set('Your message was successfully sent! ');
   }
 
   private handleFailedSubmission(responseCode: number): void {
-    this.emailPopUpParagraph = `(${responseCode}) Our servers are full, please send an E-mail to crbrvsraps@gmail.com.`;
+    this.emailPopUpParagraph.set(
+      `(${responseCode}) Our servers are full, please send an E-mail to crbrvsraps@gmail.com.`,
+    );
   }
 
   private resetForm(): void {
-    this.submitted = false;
+    this.submitted.set(false);
     this.contactMeForm.reset();
     Object.keys(this.contactMeForm.controls).forEach((key) => {
       const control = this.contactMeForm.get(key);
@@ -106,6 +106,6 @@ export class ContactComponent {
   }
 
   closeEmailModal() {
-    this.isEmailModalOpen = false;
+    this.isEmailModalOpen.set(false);
   }
 }

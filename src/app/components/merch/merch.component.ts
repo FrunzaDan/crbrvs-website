@@ -2,10 +2,10 @@ import {
   Component,
   ElementRef,
   OnInit,
+  inject,
   signal,
   viewChild,
 } from '@angular/core';
-import { fadeIn, fadeOut, transformIn, transformOut } from '../../animations';
 import { MerchItem } from '../../interfaces/merch-item';
 import { LoadMerchService } from '../../services/load-merch.service';
 import { ScrollerService } from '../../services/scroller.service';
@@ -14,19 +14,16 @@ import { ScrollerService } from '../../services/scroller.service';
   selector: 'app-merch',
   templateUrl: './merch.component.html',
   styleUrl: './merch.component.css',
-  animations: [transformIn, transformOut, fadeIn, fadeOut],
 })
 export class MerchComponent implements OnInit {
+  private readonly loadMerchService = inject(LoadMerchService);
+  readonly scrollerService = inject(ScrollerService);
+
   readonly merchScrollContainer = viewChild<ElementRef>('merchScrollContainer');
 
   merchItems = signal<MerchItem[]>([]);
   selectedMerchItem = signal<MerchItem | null>(null);
   isMerchModalOpen = signal<boolean>(false);
-
-  constructor(
-    private loadMerchService: LoadMerchService,
-    public scrollerService: ScrollerService,
-  ) {}
 
   ngOnInit(): void {
     const loadedSongs = this.loadMerchService.loadMerch();
