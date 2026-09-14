@@ -1,4 +1,3 @@
-import { provideHttpClient, withFetch } from '@angular/common/http';
 import {
   ApplicationConfig,
   provideBrowserGlobalErrorListeners,
@@ -30,7 +29,6 @@ export const appConfig: ApplicationConfig = {
       withViewTransitions(),
     ),
     provideClientHydration(withEventReplay()),
-    provideHttpClient(withFetch()),
     provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
     provideAnalytics(() => getAnalytics()),
     provideZonelessChangeDetection(),

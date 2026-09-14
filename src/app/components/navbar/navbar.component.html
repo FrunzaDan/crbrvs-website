@@ -2,6 +2,10 @@
   <nav class="navbar navbar-expand-sm" aria-label="Main navigation">
     <img
       (click)="scrollToSection('music')"
+      (keydown.enter)="scrollToSection('music')"
+      (keydown.space)="$event.preventDefault(); scrollToSection('music')"
+      role="button"
+      tabindex="0"
       class="nav-logo hover-item"
       src="/assets/images/crbrvs_logo.png"
       alt="CRBRVS Logo"

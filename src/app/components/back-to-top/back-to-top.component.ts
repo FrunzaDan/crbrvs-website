@@ -1,4 +1,10 @@
-import { Component, HostListener, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  HostListener,
+  inject,
+  signal,
+} from '@angular/core';
 import { ScrollerService } from '../../services/scroller.service';
 
 @Component({
@@ -6,6 +12,7 @@ import { ScrollerService } from '../../services/scroller.service';
   imports: [],
   templateUrl: './back-to-top.component.html',
   styleUrl: './back-to-top.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BackToTopComponent {
   readonly scrollerService = inject(ScrollerService);

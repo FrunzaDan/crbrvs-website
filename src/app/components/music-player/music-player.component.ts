@@ -1,7 +1,9 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   OnDestroy,
   OnInit,
+  computed,
   inject,
   signal,
 } from '@angular/core';
@@ -13,6 +15,7 @@ import { LoadMusicService } from '../../services/load-music.service';
   standalone: true,
   templateUrl: './music-player.component.html',
   styleUrl: './music-player.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MusicPlayerComponent implements OnInit, OnDestroy {
   private readonly loadMusicService = inject(LoadMusicService);
@@ -23,6 +26,13 @@ export class MusicPlayerComponent implements OnInit, OnDestroy {
   currentTime = signal<number>(0);
   currentAudioDuration = signal<number>(0);
   currentIndex = signal<number>(0);
+
+  readonly formattedCurrentTime = computed(() =>
+    this.formatTime(this.currentTime()),
+  );
+  readonly formattedDuration = computed(() =>
+    this.formatTime(this.currentAudioDuration()),
+  );
 
   private audio: HTMLAudioElement | null = null;
   private progressInterval: number | null = null;

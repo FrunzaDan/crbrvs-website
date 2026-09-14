@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -13,6 +13,7 @@ import { ContactMeForm } from '../../interfaces/contact-me-form';
   imports: [ReactiveFormsModule],
   templateUrl: './contact.component.html',
   styleUrl: './contact.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ContactComponent {
   private readonly sendEmailService = inject(SendEmailService);

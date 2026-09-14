@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   ElementRef,
   OnInit,
@@ -14,6 +15,7 @@ import { ScrollerService } from '../../services/scroller.service';
   selector: 'app-merch',
   templateUrl: './merch.component.html',
   styleUrl: './merch.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MerchComponent implements OnInit {
   private readonly loadMerchService = inject(LoadMerchService);

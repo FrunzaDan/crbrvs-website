@@ -18,12 +18,12 @@
   <div class="row px-2">
     <div class="col d-flex justify-content-center align-items-center">
       <div id="horizontal-scroll-container" #merchScrollContainer>
-        @for (merchItem of merchItems(); track merchItem.title) {
+        @for (merchItem of merchItems(); track merchItem.id) {
         <div class="merch-card hover-card">
           <img
             class="merch-img"
             [src]="merchItem.src"
-            alt="CRBRVS merch item"
+            [alt]="merchItem.title + ' - CRBRVS merch'"
             loading="lazy"
           />
           <div class="p-2">
@@ -55,7 +55,12 @@
 <div
   class="full-view-background"
   animate.leave="leaving"
+  role="button"
+  tabindex="0"
+  aria-label="Close merchandise details"
   (click)="closeMerchItemModal()"
+  (keydown.enter)="closeMerchItemModal()"
+  (keydown.space)="$event.preventDefault(); closeMerchItemModal()"
 ></div>
 
 <div class="get-merch-modal" animate.leave="leaving">
@@ -71,7 +76,7 @@
       <img
         class="merch-img-full"
         [src]="selectedMerchItem()?.src"
-        alt="CRBRVS official merchandise item"
+        [alt]="selectedMerchItem()!.title + ' - CRBRVS official merchandise'"
         title="CRBRVS Official Merchandise"
         loading="lazy"
       />
