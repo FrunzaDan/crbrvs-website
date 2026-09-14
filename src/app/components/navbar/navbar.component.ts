@@ -1,4 +1,4 @@
-import { ViewportScroller } from '@angular/common';
+import { NgOptimizedImage, ViewportScroller } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -10,7 +10,7 @@ import { HamburgerButtonComponent } from '../hamburger-button/hamburger-button.c
 
 @Component({
   selector: 'app-navbar',
-  imports: [RouterModule, HamburgerButtonComponent],
+  imports: [RouterModule, HamburgerButtonComponent, NgOptimizedImage],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

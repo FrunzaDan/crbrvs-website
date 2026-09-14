@@ -56,6 +56,7 @@
   padding-top: 1rem;
   padding-bottom: 1rem;
   width: 10rem;
+  height: auto;
 }
 
 @media (min-width: 576px) and (max-width: 768px) {

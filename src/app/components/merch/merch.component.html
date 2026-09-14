@@ -19,21 +19,21 @@
     <div class="col d-flex justify-content-center align-items-center">
       <div id="horizontal-scroll-container" #merchScrollContainer>
         @for (merchItem of merchItems(); track merchItem.id) {
-        <div class="merch-card hover-card">
-          <img
-            class="merch-img"
-            [src]="merchItem.src"
-            [alt]="merchItem.title + ' - CRBRVS merch'"
-            loading="lazy"
-          />
-          <div class="p-2">
-            <h4 class="pink-color">{{ merchItem.title }}</h4>
-            <h4 class="pink-color">{{ merchItem.price }} RON</h4>
+          <div class="merch-card hover-card">
+            <img
+              class="merch-img"
+              [src]="merchItem.src"
+              [alt]="merchItem.title + ' - CRBRVS merch'"
+              loading="lazy"
+            />
+            <div class="p-2">
+              <h4 class="pink-color">{{ merchItem.title }}</h4>
+              <h4 class="pink-color">{{ merchItem.price }} RON</h4>
+            </div>
+            <button class="w-100" (click)="openMerchItemModal(merchItem)">
+              Seems interesting
+            </button>
           </div>
-          <button class="w-100" (click)="openMerchItemModal(merchItem)">
-            Seems interesting
-          </button>
-        </div>
         }
       </div>
     </div>
@@ -52,67 +52,67 @@
 </div>
 
 @if (isMerchModalOpen()) {
-<div
-  class="full-view-background"
-  animate.leave="leaving"
-  role="button"
-  tabindex="0"
-  aria-label="Close merchandise details"
-  (click)="closeMerchItemModal()"
-  (keydown.enter)="closeMerchItemModal()"
-  (keydown.space)="$event.preventDefault(); closeMerchItemModal()"
-></div>
+  <div
+    class="full-view-background"
+    animate.leave="leaving"
+    role="button"
+    tabindex="0"
+    aria-label="Close merchandise details"
+    (click)="closeMerchItemModal()"
+    (keydown.enter)="closeMerchItemModal()"
+    (keydown.space)="$event.preventDefault(); closeMerchItemModal()"
+  ></div>
 
-<div class="get-merch-modal" animate.leave="leaving">
-  <div class="customModal-header">
-    <h1>What's this {{ selectedMerchItem()?.title }}?</h1>
-    <button (click)="closeMerchItemModal()" class="close-button">
-      &times;
-    </button>
-  </div>
-
-  <div class="container-fluid">
-    <div class="row p-2 d-flex justify-content-center align-items-center">
-      <img
-        class="merch-img-full"
-        [src]="selectedMerchItem()?.src"
-        [alt]="selectedMerchItem()!.title + ' - CRBRVS official merchandise'"
-        title="CRBRVS Official Merchandise"
-        loading="lazy"
-      />
+  <div class="get-merch-modal" animate.leave="leaving">
+    <div class="customModal-header">
+      <h1>What's this {{ selectedMerchItem()?.title }}?</h1>
+      <button (click)="closeMerchItemModal()" class="close-button">
+        &times;
+      </button>
     </div>
 
-    <div class="row p-2">
-      <p>Description: {{ selectedMerchItem()?.description }}</p>
-      <p>Price: {{ selectedMerchItem()?.price }} RON</p>
-      <p>Interested in this merch?</p>
-    </div>
-
-    <div class="row p-2">
-      <div class="col-sm-6 py-2">
-        <a class="fullSpaceHref" href="tel:+40744210017">
-          <button class="w-100">
-            <span><i class="bi bi-telephone white-icon"></i></span>
-            <span class="ms-2"> Call me </span>
-          </button>
-        </a>
+    <div class="container-fluid">
+      <div class="row p-2 d-flex justify-content-center align-items-center">
+        <img
+          class="merch-img-full"
+          [src]="selectedMerchItem()?.src"
+          [alt]="selectedMerchItem()!.title + ' - CRBRVS official merchandise'"
+          title="CRBRVS Official Merchandise"
+          loading="lazy"
+        />
       </div>
-      <div class="col-sm-6 py-2">
-        <a class="fullSpaceHref" href="mailto:crbrvsraps@gmail.com">
-          <button class="w-100">
-            <span><i class="bi bi-envelope white-icon"></i></span>
-            <span class="ms-2"> E-mail me </span>
-          </button>
-        </a>
+
+      <div class="row p-2">
+        <p>Description: {{ selectedMerchItem()?.description }}</p>
+        <p>Price: {{ selectedMerchItem()?.price }} RON</p>
+        <p>Interested in this merch?</p>
+      </div>
+
+      <div class="row p-2">
+        <div class="col-sm-6 py-2">
+          <a class="fullSpaceHref" href="tel:+40744210017">
+            <button class="w-100">
+              <span><i class="bi bi-telephone white-icon"></i></span>
+              <span class="ms-2"> Call me </span>
+            </button>
+          </a>
+        </div>
+        <div class="col-sm-6 py-2">
+          <a class="fullSpaceHref" href="mailto:crbrvsraps@gmail.com">
+            <button class="w-100">
+              <span><i class="bi bi-envelope white-icon"></i></span>
+              <span class="ms-2"> E-mail me </span>
+            </button>
+          </a>
+        </div>
+      </div>
+
+      <div class="row p-2">
+        <p>
+          *Payment is only by cash on delivery after contacting me to confirm
+          shipment.
+        </p>
       </div>
     </div>
-
-    <div class="row p-2">
-      <p>
-        *Payment is only by cash on delivery after contacting me to confirm
-        shipment.
-      </p>
-    </div>
   </div>
-</div>
 }

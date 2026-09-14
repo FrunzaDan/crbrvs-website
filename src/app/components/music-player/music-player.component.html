@@ -2,7 +2,9 @@
 <div class="music-player">
   <img
     class="artwork"
-    [src]="currentSong()!.artwork"
+    [ngSrc]="currentSong()!.artwork"
+    width="1080"
+    height="1080"
     [alt]="currentSong()!.title + ' Artwork'"
   />
 

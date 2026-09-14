@@ -7,12 +7,14 @@ import {
   inject,
   signal,
 } from '@angular/core';
+import { NgOptimizedImage } from '@angular/common';
 import { Song } from '../../interfaces/song';
 import { LoadMusicService } from '../../services/load-music.service';
 
 @Component({
   selector: 'app-music-player',
   standalone: true,
+  imports: [NgOptimizedImage],
   templateUrl: './music-player.component.html',
   styleUrl: './music-player.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
