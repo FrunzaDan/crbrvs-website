@@ -24,7 +24,10 @@
   transform: translateY(0);
   max-height: 1000px;
   overflow: visible;
-  transition: max-height 0.5s ease, opacity 0.5s ease, transform 0.5s ease;
+  transition:
+    max-height 0.5s ease,
+    opacity 0.5s ease,
+    transform 0.5s ease;
 }
 
 .headline-intro-text {
@@ -47,6 +50,12 @@
   padding: 1rem 0.4rem;
   transform-origin: 50% 50%;
   display: inline-block;
+}
+
+.nav-link:focus-visible {
+  outline: 3px solid var(--main-light-color);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 5px var(--main-second-color);
 }
 
 .nav-logo {
@@ -105,11 +114,8 @@
 }
 
 #background-image-header {
-  background-image: linear-gradient(
-      -45deg,
-      rgba(1, 92, 87, 0.6),
-      rgba(255, 55, 120, 0.6)
-    ),
+  background-image:
+    linear-gradient(-45deg, rgba(1, 92, 87, 0.6), rgba(255, 55, 120, 0.6)),
     url(/assets/images/crbrvs1.webp);
   position: fixed;
   top: 0;
@@ -141,9 +147,21 @@
     overflow: hidden;
     opacity: 0;
     transform: translateY(-20px);
-    transition: max-height 0.5s ease, opacity 0.5s ease, transform 0.5s ease;
+    transition:
+      max-height 0.5s ease,
+      opacity 0.5s ease,
+      transform 0.5s ease;
     background-color: var(--main-light-color);
     border-radius: 2rem;
+  }
+
+  .navbar-collapse .nav-link,
+  .navbar-collapse .nav-link:visited,
+  .navbar-collapse .nav-link:hover,
+  .navbar-collapse .nav-link:active {
+    color: var(--main-first-color);
+    text-shadow: none;
+    text-shadow: 6px 6px var(--main-second-color);
   }
 
   .navbar-collapse.show {

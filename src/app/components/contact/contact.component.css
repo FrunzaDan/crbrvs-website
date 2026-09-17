@@ -39,6 +39,12 @@
   box-shadow: none;
 }
 
+.form-control:focus-visible {
+  outline: 3px solid var(--main-light-color);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 5px var(--main-second-color);
+}
+
 .contact-info {
   display: flex;
   flex-direction: column;

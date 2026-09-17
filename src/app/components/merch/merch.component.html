@@ -45,10 +45,18 @@
 
   <div class="row px-2">
     <div class="col d-flex justify-content-center align-items-center pb-4">
-      <button class="player-controls-btn" (click)="scrollLeft()">
+      <button
+        class="player-controls-btn"
+        (click)="scrollLeft()"
+        aria-label="Scroll merch left"
+      >
         <span class="player-action-icon action-btn-backward"></span>
       </button>
-      <button class="player-controls-btn" (click)="scrollRight()">
+      <button
+        class="player-controls-btn"
+        (click)="scrollRight()"
+        aria-label="Scroll merch right"
+      >
         <span class="player-action-icon action-btn-forward"></span>
       </button>
     </div>
@@ -71,7 +79,11 @@
   <div class="get-merch-modal" animate.leave="leaving">
     <div class="customModal-header">
       <h2>What's this {{ selectedMerchItem()?.title }}?</h2>
-      <button (click)="closeMerchItemModal()" class="close-button">
+      <button
+        (click)="closeMerchItemModal()"
+        class="close-button"
+        aria-label="Close merchandise details"
+      >
         &times;
       </button>
     </div>
@@ -99,7 +111,7 @@
         <div class="col-sm-6 py-2">
           <a class="fullSpaceHref" href="tel:+40744210017">
             <button class="w-100">
-              <span><i class="bi bi-telephone white-icon"></i></span>
+              <span><i class="bi bi-telephone white-icon" aria-hidden="true"></i></span>
               <span class="ms-2"> Call me </span>
             </button>
           </a>
@@ -107,7 +119,7 @@
         <div class="col-sm-6 py-2">
           <a class="fullSpaceHref" href="mailto:crbrvsraps@gmail.com">
             <button class="w-100">
-              <span><i class="bi bi-envelope white-icon"></i></span>
+              <span><i class="bi bi-envelope white-icon" aria-hidden="true"></i></span>
               <span class="ms-2"> E-mail me </span>
             </button>
           </a>
