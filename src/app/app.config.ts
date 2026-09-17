@@ -3,18 +3,16 @@ import {
   provideBrowserGlobalErrorListeners,
   provideZonelessChangeDetection,
 } from '@angular/core';
-import { getAnalytics, provideAnalytics } from '@angular/fire/analytics';
-import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import {
   provideClientHydration,
   withEventReplay,
+  withNoIncrementalHydration
 } from '@angular/platform-browser';
 import {
   provideRouter,
   withInMemoryScrolling,
   withViewTransitions,
 } from '@angular/router';
-import { environment } from '../environments/environment';
 import { routes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
@@ -28,9 +26,7 @@ export const appConfig: ApplicationConfig = {
       }),
       withViewTransitions(),
     ),
-    provideClientHydration(withEventReplay()),
-    provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
-    provideAnalytics(() => getAnalytics()),
+    provideClientHydration(withEventReplay(), withNoIncrementalHydration()),
     provideZonelessChangeDetection(),
   ],
 };
