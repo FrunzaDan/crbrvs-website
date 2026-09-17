@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build --configuration production",
+    "build": "ng build --configuration production && cp dist/crbrvs-website/browser/404/index.html dist/crbrvs-website/browser/404.html",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "serve:ssr:CRBRVS_Website": "node dist/crbrvs-website/server/server.mjs"

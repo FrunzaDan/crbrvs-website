@@ -1,3 +1,4 @@
+import { NgOptimizedImage } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -13,6 +14,7 @@ import { ScrollerService } from '../../services/scroller.service';
 
 @Component({
   selector: 'app-merch',
+  imports: [NgOptimizedImage],
   templateUrl: './merch.component.html',
   styleUrl: './merch.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

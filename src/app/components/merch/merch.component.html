@@ -1,8 +1,9 @@
+<section aria-labelledby="merch-heading">
 <div class="container-fluid p-2" id="background-image-merch">
   <div class="row p-2">
     <div class="section-title">
       <div class="rectangle-back"></div>
-      <div class="section-title-intro-text">Merch.</div>
+      <h2 id="merch-heading" class="section-title-intro-text">Merch.</h2>
       <div class="rectangle-front"></div>
     </div>
   </div>
@@ -20,15 +21,18 @@
       <div id="horizontal-scroll-container" #merchScrollContainer>
         @for (merchItem of merchItems(); track merchItem.id) {
           <div class="merch-card hover-card">
-            <img
-              class="merch-img"
-              [src]="merchItem.src"
-              [alt]="merchItem.title + ' - CRBRVS merch'"
-              loading="lazy"
-            />
+            <div class="merch-img-container">
+              <img
+                class="merch-img"
+                fill
+                [ngSrc]="merchItem.src"
+                [alt]="merchItem.title + ' - CRBRVS merch'"
+                loading="lazy"
+              />
+            </div>
             <div class="p-2">
-              <h4 class="pink-color">{{ merchItem.title }}</h4>
-              <h4 class="pink-color">{{ merchItem.price }} RON</h4>
+              <h3 class="pink-color">{{ merchItem.title }}</h3>
+              <p class="pink-color">{{ merchItem.price }} RON</p>
             </div>
             <button class="w-100" (click)="openMerchItemModal(merchItem)">
               Seems interesting
@@ -50,6 +54,7 @@
     </div>
   </div>
 </div>
+</section>
 
 @if (isMerchModalOpen()) {
   <div
@@ -65,7 +70,7 @@
 
   <div class="get-merch-modal" animate.leave="leaving">
     <div class="customModal-header">
-      <h1>What's this {{ selectedMerchItem()?.title }}?</h1>
+      <h2>What's this {{ selectedMerchItem()?.title }}?</h2>
       <button (click)="closeMerchItemModal()" class="close-button">
         &times;
       </button>
@@ -75,7 +80,9 @@
       <div class="row p-2 d-flex justify-content-center align-items-center">
         <img
           class="merch-img-full"
-          [src]="selectedMerchItem()?.src"
+          [ngSrc]="selectedMerchItem()!.src"
+          [width]="selectedMerchItem()!.width"
+          [height]="selectedMerchItem()!.height"
           [alt]="selectedMerchItem()!.title + ' - CRBRVS official merchandise'"
           title="CRBRVS Official Merchandise"
           loading="lazy"
