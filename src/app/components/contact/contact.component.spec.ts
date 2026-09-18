@@ -124,6 +124,50 @@ describe('ContactComponent', () => {
       });
       expect(component.submitted()).toBe(false);
     });
+
+    it('also resets the form after a failed submission, discarding the typed message', async () => {
+      fillValidForm();
+      sendEmailService.sendEmailJS.mockResolvedValue(503);
+
+      await component.onSubmit();
+
+      expect(component.contactMeForm.value).toEqual({
+        name: null,
+        email: null,
+        from_message: null,
+      });
+      expect(component.submitted()).toBe(false);
+    });
+
+    it('also resets the form after the email service throws', async () => {
+      fillValidForm();
+      sendEmailService.sendEmailJS.mockRejectedValue(new Error('network error'));
+      vi.spyOn(console, 'error').mockImplementation(() => {});
+
+      await component.onSubmit();
+
+      expect(component.contactMeForm.value).toEqual({
+        name: null,
+        email: null,
+        from_message: null,
+      });
+    });
+
+    it('leaves the form untouched when validation fails, so the user can fix and resubmit', async () => {
+      component.contactMeForm.setValue({
+        name: 'Jane Doe',
+        email: 'not-an-email',
+        from_message: 'Hello there',
+      });
+
+      await component.onSubmit();
+
+      expect(component.contactMeForm.value).toEqual({
+        name: 'Jane Doe',
+        email: 'not-an-email',
+        from_message: 'Hello there',
+      });
+    });
   });
 
   describe('closeEmailModal', () => {

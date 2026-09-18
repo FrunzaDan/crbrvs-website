@@ -54,4 +54,33 @@ describe('BackToTopComponent', () => {
 
     expect(component.shouldShowBackToTopButton()).toBe(false);
   });
+
+  it('does not move the reference position for a delta at exactly the sensitivity threshold', () => {
+    vi.spyOn(window, 'scrollY', 'get').mockReturnValue(400);
+    component.onWindowScroll(new Event('scroll'));
+    expect(component.shouldShowBackToTopButton()).toBe(false);
+
+    // A second small scroll on top of the ignored one: if the reference position
+    // had moved to 400, this delta would only be 300 and stay ignored too.
+    vi.spyOn(window, 'scrollY', 'get').mockReturnValue(700);
+    component.onWindowScroll(new Event('scroll'));
+
+    expect(component.shouldShowBackToTopButton()).toBe(false);
+  });
+
+  it('stays hidden for a scroll position at exactly the show-button threshold', () => {
+    vi.spyOn(window, 'scrollY', 'get').mockReturnValue(1200);
+
+    component.onWindowScroll(new Event('scroll'));
+
+    expect(component.shouldShowBackToTopButton()).toBe(false);
+  });
+
+  it('shows the button just past the show-button threshold', () => {
+    vi.spyOn(window, 'scrollY', 'get').mockReturnValue(1201);
+
+    component.onWindowScroll(new Event('scroll'));
+
+    expect(component.shouldShowBackToTopButton()).toBe(true);
+  });
 });
