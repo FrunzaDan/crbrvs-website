@@ -4,14 +4,14 @@ Marketing site for the rap artist CRBRVS — music showcase with a custom audio 
 
 ## Tech Stack & Architecture
 
-- **Framework:** Angular 21, standalone components throughout, zoneless change detection (`provideZonelessChangeDetection()`), Signals for all component state
+- **Framework:** Angular 22, standalone components throughout, zoneless change detection (`provideZonelessChangeDetection()`), Signals for all component state
 - **UI & Styling:** Plain CSS with a custom-property design system ([styles.css](src/styles.css)), a locally vendored, trimmed copy of Bootstrap's grid/flexbox/card/form utility CSS ([bootstrap-essentials.css](src/bootstrap-essentials.css) — no Bootstrap JS, no `bootstrap` npm package) used for layout across most components, plus `bootstrap-icons` for iconography
 - **State & Data:** Angular Signals (`signal`/`computed`) end to end — no NgRx, no RxJS in application code (RxJS is only a transitive Angular peer dep). Content (songs, merch) is static JSON in `public/assets/*.json`, loaded synchronously through thin injectable services
 - **Rendering:** SSR + prerendering via `@angular/ssr`, served either by the Express entry in [src/server.ts](src/server.ts) or as prerendered static output
-- **Backend-as-a-service:** Firebase (`@angular/fire`) for Analytics only, deployed via Firebase Hosting ([firebase.json](firebase.json)); the contact form sends mail client-side through EmailJS — there's no custom backend/API
+- **Backend-as-a-service:** Firebase Analytics only — the plain modular `firebase` SDK (`firebase/app` + `firebase/analytics`), initialized directly in [src/main.ts](src/main.ts) alongside `bootstrapApplication` (not `@angular/fire`, not wired into `app.config.ts`), guarded behind a `typeof window !== 'undefined'` check so it's skipped during SSR. Hosting is Firebase Hosting ([firebase.json](firebase.json)); the contact form sends mail client-side through EmailJS — there's no custom backend/API
 - **Tooling:** Angular CLI / `@angular/build` (esbuild), Vitest + jsdom for unit tests via the `@angular/build:unit-test` builder, Prettier for formatting
 
-It's a single routed feature, not a multi-module app: [app.routes.ts](src/app/app.routes.ts) lazy-loads two top-level standalone components (`MainPageComponent`, `PageNotFoundComponent`, with a `**` catch-all redirecting to `404`). `MainPageComponent` composes the page as a flat stack of standalone components (`app-navbar`, `app-music`, `app-merch`, `app-contact`, `app-footer`, `app-back-to-top`) and calls `SeoService` on init to set meta/OG/Twitter tags and the canonical URL. [app.config.ts](src/app/app.config.ts) wires up the router (view transitions, scroll restoration to top, anchor scrolling), client hydration with event replay, Firebase providers, and zoneless change detection — so every component is `OnPush` and re-renders off signal writes, not zone patches. `app.config.server.ts` merges in `provideServerRendering()` for the SSR/prerender build. There are no guards, interceptors, or resolvers — nothing in the route tree needs them.
+It's a single routed feature, not a multi-module app: [app.routes.ts](src/app/app.routes.ts) lazy-loads two top-level standalone components (`MainPageComponent`, `PageNotFoundComponent`, with a `**` catch-all redirecting to `404`). `MainPageComponent` composes the page as a flat stack of standalone components (`app-navbar`, `app-music`, `app-merch`, `app-contact`, `app-footer`, `app-back-to-top`) and calls `SeoService` on init to set meta/OG/Twitter tags and the canonical URL. [app.config.ts](src/app/app.config.ts) wires up the router (view transitions, scroll restoration to top, anchor scrolling), client hydration with event replay (incremental hydration disabled), and zoneless change detection — so every component is `OnPush` and re-renders off signal writes, not zone patches. Firebase Analytics is initialized separately, straight in `main.ts`, not through this config. `app.config.server.ts` merges in `provideServerRendering()` for the SSR/prerender build. There are no guards, interceptors, or resolvers — nothing in the route tree needs them.
 
 ## Project Structure
 
@@ -68,7 +68,7 @@ There's no `.env`/`.env.example` or Docker setup — all runtime config lives in
 
 ## Testing
 
-Vitest (via `@angular/build:unit-test`) with jsdom, configured through `tsconfig.spec.json`. 10 spec files / 65 tests covering every service and component, including DOM-level interaction tests (real `.click()` calls, pointer events) for stateful components like `music-player`.
+Vitest (via `@angular/build:unit-test`) with jsdom, configured through `tsconfig.spec.json`. 14 spec files / 85 tests covering every service and component, including DOM-level interaction tests (real `.click()` calls, pointer events) for stateful components like `music-player`, and boundary/branch cases (scroll-threshold edges, SSR vs. browser platform checks, failed-submission and viewChild-not-yet-available paths).
 
 ## Deployment
 
