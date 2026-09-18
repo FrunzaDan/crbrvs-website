@@ -31,7 +31,7 @@ export class MainPageComponent implements OnInit {
       ogTitle: 'CRBRVS Rap Hive',
       ogDescription:
         'The Website of the rapper Cerga Andrei, named CRBRVS, based in Romania. His music, merch and contacts are highlighted.',
-      ogImage: 'https://crbrvsraphive.com/assets/images/crbrvs_logo.svg',
+      ogImage: 'https://crbrvsraphive.com/assets/images/crbrvs_logo.png',
       canonicalUrl: 'https://crbrvsraphive.com',
     });
   }
