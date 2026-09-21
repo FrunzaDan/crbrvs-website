@@ -1,0 +1,48 @@
+/*!
+ * Bootstrap Icons v1.13.1 (https://icons.getbootstrap.com/)
+ * Copyright 2019-2024 The Bootstrap Authors
+ * Licensed under MIT (https://github.com/twbs/icons/blob/main/LICENSE)
+ *
+ * Subset of the icon font holding only the glyphs this site uses.
+ * Re-generate the font with pyftsubset if another icon is needed.
+ */
+
+@font-face {
+  font-display: block;
+  font-family: 'bootstrap-icons';
+  src: url('./fonts/bootstrap-icons-subset.woff2') format('woff2');
+}
+
+.bi::before,
+[class^='bi-']::before,
+[class*=' bi-']::before {
+  display: inline-block;
+  font-family: bootstrap-icons !important;
+  font-style: normal;
+  font-weight: normal !important;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  vertical-align: -0.125em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.bi-envelope::before {
+  content: '\f32f';
+}
+.bi-facebook::before {
+  content: '\f344';
+}
+.bi-instagram::before {
+  content: '\f437';
+}
+.bi-telephone::before {
+  content: '\f5c1';
+}
+.bi-youtube::before {
+  content: '\f62b';
+}
+.bi-spotify::before {
+  content: '\f666';
+}

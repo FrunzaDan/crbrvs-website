@@ -17,7 +17,7 @@
     <app-hamburger-button
       [isOpen]="isMenuOpen()"
       (toggleMenu)="onToggleMenu($event)"
-      aria-controls="main-nav"
+      controls="main-nav"
     ></app-hamburger-button>
     <div
       class="navbar-collapse justify-content-end"
@@ -46,6 +46,8 @@
       </ul>
     </div>
   </nav>
-  <h1 class="headline-intro-text">Redefining rap.</h1>
+  <h1 class="headline-intro-text">
+    <span class="visually-hidden">CRBRVS: </span>Redefining rap.
+  </h1>
   <div id="background-image-header"></div>
 </header>

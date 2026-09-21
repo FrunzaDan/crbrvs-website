@@ -44,4 +44,20 @@ describe('HamburgerButtonComponent', () => {
 
     expect(emitted).toBe(false);
   });
+
+  it('puts aria-controls on the button itself when a controlled id is given', () => {
+    fixture.componentRef.setInput('controls', 'main-nav');
+    fixture.detectChanges();
+
+    const button = fixture.nativeElement.querySelector('button') as HTMLElement;
+    expect(button.getAttribute('aria-controls')).toBe('main-nav');
+    expect(fixture.nativeElement.hasAttribute('aria-controls')).toBe(false);
+  });
+
+  it('omits aria-controls when no controlled id is given', () => {
+    fixture.detectChanges();
+
+    const button = fixture.nativeElement.querySelector('button') as HTMLElement;
+    expect(button.hasAttribute('aria-controls')).toBe(false);
+  });
 });

@@ -182,4 +182,105 @@ describe('ContactComponent', () => {
       expect(component.isEmailModalOpen()).toBe(false);
     });
   });
+
+  describe('accessibility', () => {
+    const field = (id: string) =>
+      fixture.nativeElement.querySelector(`#${id}`) as HTMLElement;
+
+    it('uses autocomplete tokens that match the field purpose', () => {
+      expect(field('name').getAttribute('autocomplete')).toBe('name');
+      expect(field('email').getAttribute('autocomplete')).toBe('email');
+    });
+
+    it('marks all fields as required for assistive technology', () => {
+      for (const id of ['name', 'email', 'from_message']) {
+        expect(field(id).getAttribute('aria-required')).toBe('true');
+      }
+    });
+
+    it('does not flag fields as invalid before submission', () => {
+      for (const id of ['name', 'email', 'from_message']) {
+        expect(field(id).hasAttribute('aria-invalid')).toBe(false);
+        expect(field(id).hasAttribute('aria-describedby')).toBe(false);
+      }
+    });
+
+    it('links each invalid field to its error message after a failed submit', async () => {
+      await component.onSubmit();
+      fixture.detectChanges();
+
+      const expected: Record<string, string> = {
+        name: 'name-error',
+        email: 'email-error',
+        from_message: 'message-error',
+      };
+      for (const [id, errorId] of Object.entries(expected)) {
+        expect(field(id).getAttribute('aria-invalid')).toBe('true');
+        expect(field(id).getAttribute('aria-describedby')).toBe(errorId);
+        expect(document.getElementById(errorId)?.textContent).toMatch(
+          /required/,
+        );
+      }
+    });
+
+    describe('result popup', () => {
+      async function submitValidForm(): Promise<HTMLButtonElement> {
+        sendEmailService.sendEmailJS.mockResolvedValue(200);
+        fillValidForm();
+        const submit = fixture.nativeElement.querySelector(
+          'button[type="submit"]',
+        ) as HTMLButtonElement;
+        submit.focus();
+        await component.onSubmit();
+        fixture.detectChanges();
+        await fixture.whenStable();
+        return submit;
+      }
+
+      it('is a labelled dialog whose status text is announced politely', async () => {
+        await submitValidForm();
+
+        const popup = fixture.nativeElement.querySelector(
+          '.send-email-modal',
+        ) as HTMLElement;
+        expect(popup.getAttribute('role')).toBe('dialog');
+        expect(popup.getAttribute('aria-labelledby')).toBe(
+          'email-popup-text-header',
+        );
+        expect(
+          popup.querySelector('#email-popup-text-paragraph')?.getAttribute(
+            'aria-live',
+          ),
+        ).toBe('polite');
+      });
+
+      it('moves focus to the OK button when it opens', async () => {
+        await submitValidForm();
+
+        const ok = fixture.nativeElement.querySelector(
+          '.send-email-modal button',
+        );
+        expect(document.activeElement).toBe(ok);
+      });
+
+      it('closes on Escape and returns focus to the submit button', async () => {
+        const submit = await submitValidForm();
+
+        document.dispatchEvent(
+          new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }),
+        );
+
+        expect(component.isEmailModalOpen()).toBe(false);
+        expect(document.activeElement).toBe(submit);
+      });
+
+      it('ignores Escape while the popup is closed', () => {
+        document.dispatchEvent(
+          new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }),
+        );
+
+        expect(component.isEmailModalOpen()).toBe(false);
+      });
+    });
+  });
 });

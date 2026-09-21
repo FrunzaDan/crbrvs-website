@@ -1,4 +1,15 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  HostListener,
+  Injector,
+  afterNextRender,
+  inject,
+  signal,
+  viewChild,
+} from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -17,6 +28,11 @@ import { ContactMeForm } from '../../interfaces/contact-me-form';
 })
 export class ContactComponent {
   private readonly sendEmailService = inject(SendEmailService);
+  private readonly document = inject(DOCUMENT);
+  private readonly injector = inject(Injector);
+  private focusBeforeModal: HTMLElement | null = null;
+
+  readonly emailOkButton = viewChild<ElementRef<HTMLButtonElement>>('emailOkButton');
 
   isEmailModalOpen = signal(false);
   emailPopUpHeader = signal('');
@@ -63,7 +79,7 @@ export class ContactComponent {
       return;
     }
 
-    this.isEmailModalOpen.set(true);
+    this.openEmailModal();
     this.emailPopUpHeader.set('Hi, ' + this.contactMeForm.value.name);
     this.emailPopUpParagraph.set('Sending...');
 
@@ -106,7 +122,26 @@ export class ContactComponent {
     });
   }
 
+  /** Opens the popup and moves keyboard focus into it, remembering where it came from. */
+  private openEmailModal(): void {
+    const active = this.document.activeElement;
+    this.focusBeforeModal = active instanceof HTMLElement ? active : null;
+    this.isEmailModalOpen.set(true);
+    afterNextRender(() => this.emailOkButton()?.nativeElement.focus(), {
+      injector: this.injector,
+    });
+  }
+
   closeEmailModal() {
     this.isEmailModalOpen.set(false);
+    this.focusBeforeModal?.focus({ preventScroll: true });
+    this.focusBeforeModal = null;
+  }
+
+  @HostListener('document:keydown.escape')
+  onEscape(): void {
+    if (this.isEmailModalOpen()) {
+      this.closeEmailModal();
+    }
   }
 }

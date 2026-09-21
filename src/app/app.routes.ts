@@ -7,7 +7,7 @@ export const routes: Routes = [
       import('./components/main-page/main-page.component').then(
         (m) => m.MainPageComponent,
       ),
-    title: 'CRBRVS Rap Hive',
+    title: 'CRBRVS Rap Hive - Official Website of Rapper Cerga Andrei',
   },
   {
     path: '404',

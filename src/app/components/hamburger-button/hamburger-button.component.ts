@@ -13,6 +13,7 @@ import {
 })
 export class HamburgerButtonComponent {
   isOpen = input(false);
+  controls = input<string>();
   toggleMenu = output<boolean>();
 
   toggleNavbar() {

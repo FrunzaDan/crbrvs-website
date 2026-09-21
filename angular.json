@@ -36,7 +36,7 @@
               "src/google829ea8c08fad9b84.html"
             ],
             "styles": [
-              "./node_modules/bootstrap-icons/font/bootstrap-icons.css",
+              "./src/bootstrap-icons-subset.css",
               "./src/bootstrap-essentials.css",
               "./src/styles.css"
             ],
@@ -68,8 +68,7 @@
                   "maximumWarning": "4kb",
                   "maximumError": "8kb"
                 }
-              ],
-              "subresourceIntegrity": true
+              ]
             },
             "development": {
               "baseHref": "/",

@@ -41,10 +41,9 @@
             <a
               href="https://www.facebook.com/CRBRVS/"
               class="contact-card-text"
-              aria-label="Facebook"
               target="_blank"
               rel="noopener noreferrer"
-              >facebook.com/CRBRVS</a
+              >facebook.com/CRBRVS<span class="visually-hidden"> (opens in a new tab)</span></a
             >
           </div>
           <div class="contact-info-entry">
@@ -54,10 +53,9 @@
             <a
               href="https://www.instagram.com/_crbrvs/"
               class="contact-card-text"
-              aria-label="Instagram"
               target="_blank"
               rel="noopener noreferrer"
-              >instagram.com/_crbrvs</a
+              >instagram.com/_crbrvs<span class="visually-hidden"> (opens in a new tab)</span></a
             >
           </div>
         </div>
@@ -77,11 +75,14 @@
               name="name"
               type="text"
               placeholder="Your name"
-              autocomplete="on"
+              autocomplete="name"
+              aria-required="true"
+              [attr.aria-invalid]="isNameInvalid ? 'true' : null"
+              [attr.aria-describedby]="isNameInvalid ? 'name-error' : null"
               [class.is-invalid]="isNameInvalid"
             />
             @if (isNameInvalid) {
-            <div class="invalid-feedback">
+            <div class="invalid-feedback" id="name-error">
               @if (name?.errors?.['required']) {
               <div>Your name is required.</div>
               }
@@ -99,11 +100,14 @@
               name="email"
               type="email"
               placeholder="Your E-mail address"
-              autocomplete="on"
+              autocomplete="email"
+              aria-required="true"
+              [attr.aria-invalid]="isEmailInvalid ? 'true' : null"
+              [attr.aria-describedby]="isEmailInvalid ? 'email-error' : null"
               [class.is-invalid]="isEmailInvalid"
             />
             @if (isEmailInvalid) {
-            <div class="invalid-feedback">
+            <div class="invalid-feedback" id="email-error">
               @if (email?.errors?.['required']) {
               <div>Your E-mail is required.</div>
               } @if (email?.errors?.['email']) {
@@ -121,13 +125,15 @@
               class="form-control mb-4"
               formControlName="from_message"
               name="from_message"
-              type="text"
               placeholder="Your message for me"
+              aria-required="true"
+              [attr.aria-invalid]="isMessageInvalid ? 'true' : null"
+              [attr.aria-describedby]="isMessageInvalid ? 'message-error' : null"
               [class.is-invalid]="isMessageInvalid"
               style="height: 10rem"
             ></textarea>
             @if (isMessageInvalid) {
-            <div class="invalid-feedback">
+            <div class="invalid-feedback" id="message-error">
               @if (from_message?.errors?.['required']) {
               <div>A message is required.</div>
               }
@@ -139,10 +145,23 @@
           </div>
         </form>
         @if (isEmailModalOpen()) {
-        <div class="send-email-modal" animate.leave="leaving">
+        <div
+          class="send-email-modal"
+          animate.leave="leaving"
+          role="dialog"
+          aria-labelledby="email-popup-text-header"
+          aria-describedby="email-popup-text-paragraph"
+        >
           <h2 id="email-popup-text-header">{{ emailPopUpHeader() }}</h2>
-          <p id="email-popup-text-paragraph">{{ emailPopUpParagraph() }}</p>
-          <button type="submit" class="w-100" (click)="closeEmailModal()">
+          <p id="email-popup-text-paragraph" aria-live="polite">
+            {{ emailPopUpParagraph() }}
+          </p>
+          <button
+            #emailOkButton
+            type="button"
+            class="w-100"
+            (click)="closeEmailModal()"
+          >
             OK
           </button>
         </div>

@@ -93,6 +93,11 @@
   }
 }
 
+.get-merch-modal[tabindex]:focus-visible {
+  outline: none;
+  box-shadow: 0 0 20px 1px rgba(0, 0, 0, 0.5);
+}
+
 .get-merch-modal.leaving {
   transform: translate(-50%, -50%) scale(0);
   transition: transform 300ms ease-out;
