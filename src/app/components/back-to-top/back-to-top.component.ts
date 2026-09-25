@@ -1,35 +1,33 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  HostListener,
-  inject,
-  signal,
-} from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { ScrollerService } from '../../services/scroller.service';
+
+/** How far down the page the button appears. */
+const SHOW_BUTTON_THRESHOLD = 1200;
+/** How far the page has to scroll before the button's visibility is checked again. */
+const SCROLL_CHECK_DISTANCE = 400;
 
 @Component({
   selector: 'app-back-to-top',
-  imports: [],
   templateUrl: './back-to-top.component.html',
   styleUrl: './back-to-top.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    '(window:scroll)': 'onWindowScroll()',
+  },
 })
 export class BackToTopComponent {
   readonly scrollerService = inject(ScrollerService);
 
-  private prevScrollPos: number = 0;
-  SHOW_BUTTON_THRESHOLD: number = 1200;
+  private prevScrollPos = 0;
 
-  shouldShowBackToTopButton = signal(false);
+  readonly shouldShowBackToTopButton = signal(false);
 
-  @HostListener('window:scroll', ['$event'])
-  onWindowScroll($event: any): void {
-    const currentScrollPos: number = window.scrollY;
-    const scrolledEnough: boolean =
-      Math.abs(currentScrollPos - this.prevScrollPos) > 400;
-    if (scrolledEnough) {
+  onWindowScroll(): void {
+    const currentScrollPos = window.scrollY;
+    if (
+      Math.abs(currentScrollPos - this.prevScrollPos) > SCROLL_CHECK_DISTANCE
+    ) {
       this.shouldShowBackToTopButton.set(
-        currentScrollPos > this.SHOW_BUTTON_THRESHOLD,
+        currentScrollPos > SHOW_BUTTON_THRESHOLD,
       );
       this.prevScrollPos = currentScrollPos;
     }

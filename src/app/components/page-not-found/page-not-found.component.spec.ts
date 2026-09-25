@@ -27,7 +27,7 @@ describe('PageNotFoundComponent', () => {
 
     expect(seoService.updateMetaTags).toHaveBeenCalledWith(
       expect.objectContaining({
-        canonicalUrl: 'https://crbrvsraphive.com/404',
+        path: '/404',
         robots: 'noindex, nofollow',
       }),
     );

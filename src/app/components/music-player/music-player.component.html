@@ -1,102 +1,102 @@
 @if (currentSong()) {
-<div class="music-player">
-  <img
-    class="artwork"
-    [class.playing]="isPlaying()"
-    [ngSrc]="currentSong()!.artwork"
-    width="1080"
-    height="1080"
-    [alt]="currentSong()!.title + ' Artwork'"
-  />
+  <div class="music-player">
+    <img
+      class="artwork"
+      [class.playing]="isPlaying()"
+      [ngSrc]="currentSong()!.artwork"
+      width="1080"
+      height="1080"
+      [alt]="currentSong()!.title + ' Artwork'"
+    />
 
-  <div class="song-info">
-    {{ currentSong()!.title }}
-  </div>
+    <div class="song-info">
+      {{ currentSong()!.title }}
+    </div>
 
-  <div class="song-info">{{ currentIndex() + 1 }}/{{ songs().length }}</div>
+    <div class="song-info">{{ currentIndex() + 1 }}/{{ songs().length }}</div>
 
-  <div class="progress-bar">
-    <progress
-      class="custom-progress"
-      [class.dragging]="isDraggingProgress()"
-      [value]="currentTime()"
-      [max]="currentAudioDuration()"
-      tabindex="0"
-      role="slider"
-      aria-label="Seek"
-      [attr.aria-valuenow]="currentTime()"
-      [attr.aria-valuemin]="0"
-      [attr.aria-valuemax]="currentAudioDuration()"
-      (pointerdown)="onProgressPointerDown($event)"
-      (pointermove)="onProgressPointerMove($event)"
-      (pointerup)="onProgressPointerUp($event)"
-      (pointercancel)="onProgressPointerUp($event)"
-      (keydown)="onProgressKeydown($event)"
-    ></progress>
+    <div class="progress-bar">
+      <progress
+        class="custom-progress"
+        [class.dragging]="isDraggingProgress()"
+        [value]="currentTime()"
+        [max]="currentAudioDuration()"
+        tabindex="0"
+        role="slider"
+        aria-label="Seek"
+        [attr.aria-valuenow]="currentTime()"
+        [attr.aria-valuemin]="0"
+        [attr.aria-valuemax]="currentAudioDuration()"
+        (pointerdown)="onProgressPointerDown($event)"
+        (pointermove)="onProgressPointerMove($event)"
+        (pointerup)="onProgressPointerUp($event)"
+        (pointercancel)="onProgressPointerUp($event)"
+        (keydown)="onProgressKeydown($event)"
+      ></progress>
 
-    <div class="time-display">
-      <span>{{ formattedCurrentTime() }}</span>
-      <span>{{ formattedDuration() }}</span>
+      <div class="time-display">
+        <span>{{ formattedCurrentTime() }}</span>
+        <span>{{ formattedDuration() }}</span>
+      </div>
+    </div>
+
+    @if (scrubDirection(); as direction) {
+      <div
+        class="scrub-indicator"
+        [class.scrub-backward]="direction === -1"
+        [class.scrub-forward]="direction === 1"
+      >
+        {{ direction === 1 ? '»' : '«' }} {{ scrubStep() }}s
+      </div>
+    }
+
+    <div class="player-controls">
+      <button
+        class="player-controls-btn"
+        [class.scrubbing]="scrubDirection() === -1"
+        (pointerdown)="onScrubPointerDown(-1, $event)"
+        (pointerup)="onScrubPointerUp()"
+        (pointerleave)="onScrubPointerUp()"
+        (pointercancel)="onScrubPointerUp()"
+        (click)="onScrubClick(-1)"
+        aria-label="Previous song (press and hold to rewind)"
+      >
+        <span class="player-action-icon action-btn-backward"></span>
+      </button>
+
+      <button
+        class="player-controls-btn"
+        (click)="playPauseSong()"
+        [attr.aria-label]="isPlaying() ? 'Pause' : 'Play'"
+      >
+        <span
+          class="player-action-icon"
+          [class.action-btn-pause]="isPlaying()"
+          [class.action-btn-play]="!isPlaying()"
+        ></span>
+      </button>
+
+      <button
+        class="player-controls-btn"
+        [disabled]="!canStop()"
+        (click)="stopSong()"
+        aria-label="Stop"
+      >
+        <span class="player-action-icon action-btn-stop"></span>
+      </button>
+
+      <button
+        class="player-controls-btn"
+        [class.scrubbing]="scrubDirection() === 1"
+        (pointerdown)="onScrubPointerDown(1, $event)"
+        (pointerup)="onScrubPointerUp()"
+        (pointerleave)="onScrubPointerUp()"
+        (pointercancel)="onScrubPointerUp()"
+        (click)="onScrubClick(1)"
+        aria-label="Next song (press and hold to fast-forward)"
+      >
+        <span class="player-action-icon action-btn-forward"></span>
+      </button>
     </div>
   </div>
-
-  @if (scrubDirection(); as direction) {
-  <div
-    class="scrub-indicator"
-    [class.scrub-backward]="direction === -1"
-    [class.scrub-forward]="direction === 1"
-  >
-    {{ direction === 1 ? '»' : '«' }} {{ scrubStep() }}s
-  </div>
-  }
-
-  <div class="player-controls">
-    <button
-      class="player-controls-btn"
-      [class.scrubbing]="scrubDirection() === -1"
-      (pointerdown)="onScrubPointerDown(-1, $event)"
-      (pointerup)="onScrubPointerUp()"
-      (pointerleave)="onScrubPointerUp()"
-      (pointercancel)="onScrubPointerUp()"
-      (click)="onScrubClick(-1)"
-      aria-label="Previous song (press and hold to rewind)"
-    >
-      <span class="player-action-icon action-btn-backward"></span>
-    </button>
-
-    <button
-      class="player-controls-btn"
-      (click)="playPauseSong()"
-      [attr.aria-label]="isPlaying() ? 'Pause' : 'Play'"
-    >
-      <span
-        class="player-action-icon"
-        [class.action-btn-pause]="isPlaying()"
-        [class.action-btn-play]="!isPlaying()"
-      ></span>
-    </button>
-
-    <button
-      class="player-controls-btn"
-      [disabled]="!canStop()"
-      (click)="stopSong()"
-      aria-label="Stop"
-    >
-      <span class="player-action-icon action-btn-stop"></span>
-    </button>
-
-    <button
-      class="player-controls-btn"
-      [class.scrubbing]="scrubDirection() === 1"
-      (pointerdown)="onScrubPointerDown(1, $event)"
-      (pointerup)="onScrubPointerUp()"
-      (pointerleave)="onScrubPointerUp()"
-      (pointercancel)="onScrubPointerUp()"
-      (click)="onScrubClick(1)"
-      aria-label="Next song (press and hold to fast-forward)"
-    >
-      <span class="player-action-icon action-btn-forward"></span>
-    </button>
-  </div>
-</div>
 }

@@ -17,7 +17,7 @@ describe('SendEmailService', () => {
   const form: ContactMeForm = {
     name: 'Jane Doe',
     email: 'jane@example.com',
-    from_message: 'Hello there',
+    message: 'Hello there',
   };
 
   beforeEach(() => {
@@ -37,29 +37,22 @@ describe('SendEmailService', () => {
       {
         name: form.name,
         email: form.email,
-        from_message: form.from_message,
+        from_message: form.message,
       },
       environment.emailJSConfig.publicKey,
     );
   });
 
-  it('resolves with the response status on success', async () => {
+  it('resolves once EmailJS accepts the message', async () => {
     vi.mocked(emailjs.send).mockResolvedValue({ status: 200, text: 'OK' });
 
-    const status = await service.sendEmailJS(form);
-
-    expect(status).toBe(200);
+    await expect(service.sendEmailJS(form)).resolves.toBeUndefined();
   });
 
-  it('resolves with 500 and logs when emailjs rejects', async () => {
-    const consoleErrorSpy = vi
-      .spyOn(console, 'error')
-      .mockImplementation(() => {});
-    vi.mocked(emailjs.send).mockRejectedValue(new Error('network down'));
+  it('rejects with the EmailJS error when sending fails', async () => {
+    const error = new Error('network down');
+    vi.mocked(emailjs.send).mockRejectedValue(error);
 
-    const status = await service.sendEmailJS(form);
-
-    expect(status).toBe(500);
-    expect(consoleErrorSpy).toHaveBeenCalled();
+    await expect(service.sendEmailJS(form)).rejects.toBe(error);
   });
 });

@@ -1,173 +1,187 @@
 <section aria-labelledby="contact-heading">
-<div class="container-fluid p-2" id="background-image-contact">
-  <div class="row p-2">
-    <div class="section-title">
-      <div class="rectangle-back"></div>
-      <h2 id="contact-heading" class="section-title-intro-text">Contact.</h2>
-      <div class="rectangle-front"></div>
+  <div class="container-fluid p-2" id="background-image-contact">
+    <div class="row p-2">
+      <div class="section-title">
+        <div class="rectangle-back"></div>
+        <h2 id="contact-heading" class="section-title-intro-text">Contact.</h2>
+        <div class="rectangle-front"></div>
+      </div>
     </div>
-  </div>
-  <div class="row p-2">
-    <div
-      class="col d-flex justify-content-center align-items-center text-center"
-    >
-      <div class="text-style-1">Wanna get in touch? Don't hesitate!</div>
+    <div class="row p-2">
+      <div
+        class="col d-flex justify-content-center align-items-center text-center"
+      >
+        <div class="text-style-1">Wanna get in touch? Don't hesitate!</div>
+      </div>
     </div>
-  </div>
-  <div class="row p-2">
-    <div class="col-md-7 col-sm-7 p-3">
-      <div class="card contact-card hover-card">
-        <div class="contact-info">
-          <div class="contact-info-entry">
-            <p class="contact-card-text">Contact Info:</p>
-          </div>
-          <div class="contact-info-entry">
-            <i class="bi bi-envelope contact-card-icons me-2" aria-hidden="true"></i
-            ><span class="contact-card-text">E-mail:</span><br />
-            <a href="mailto:crbrvsraps@gmail.com" class="contact-card-text"
-              >crbrvsraps&#64;gmail.com</a
-            >
-          </div>
-          <div class="contact-info-entry">
-            <i class="bi bi-telephone contact-card-icons me-2" aria-hidden="true"></i
-            ><span class="contact-card-text">Phone:</span><br />
-            <a href="tel:+40744210017" class="contact-card-text"
-              >+40744210017</a
-            >
-          </div>
-          <div class="contact-info-entry">
-            <i class="bi bi-facebook contact-card-icons me-2" aria-hidden="true"></i
-            ><span class="contact-card-text">Facebook:</span><br />
-            <a
-              href="https://www.facebook.com/CRBRVS/"
-              class="contact-card-text"
-              target="_blank"
-              rel="noopener noreferrer"
-              >facebook.com/CRBRVS<span class="visually-hidden"> (opens in a new tab)</span></a
-            >
-          </div>
-          <div class="contact-info-entry">
-            <i class="bi bi-instagram contact-card-icons me-2" aria-hidden="true"></i
-            ><span class="contact-card-text">Instagram:</span><br />
+    <div class="row p-2">
+      <div class="col-md-7 col-sm-7 p-3">
+        <div class="card contact-card hover-card">
+          <div class="contact-info">
+            <div class="contact-info-entry">
+              <p class="contact-card-text">Contact Info:</p>
+            </div>
+            <div class="contact-info-entry">
+              <i
+                class="bi bi-envelope contact-card-icons me-2"
+                aria-hidden="true"
+              ></i
+              ><span class="contact-card-text">E-mail:</span><br />
+              <a href="mailto:crbrvsraps@gmail.com" class="contact-card-text"
+                >crbrvsraps&#64;gmail.com</a
+              >
+            </div>
+            <div class="contact-info-entry">
+              <i
+                class="bi bi-telephone contact-card-icons me-2"
+                aria-hidden="true"
+              ></i
+              ><span class="contact-card-text">Phone:</span><br />
+              <a href="tel:+40744210017" class="contact-card-text"
+                >+40744210017</a
+              >
+            </div>
+            <div class="contact-info-entry">
+              <i
+                class="bi bi-facebook contact-card-icons me-2"
+                aria-hidden="true"
+              ></i
+              ><span class="contact-card-text">Facebook:</span><br />
+              <a
+                href="https://www.facebook.com/CRBRVS/"
+                class="contact-card-text"
+                target="_blank"
+                rel="noopener noreferrer"
+                >facebook.com/CRBRVS<span class="visually-hidden">
+                  (opens in a new tab)</span
+                ></a
+              >
+            </div>
+            <div class="contact-info-entry">
+              <i
+                class="bi bi-instagram contact-card-icons me-2"
+                aria-hidden="true"
+              ></i
+              ><span class="contact-card-text">Instagram:</span><br />
 
-            <a
-              href="https://www.instagram.com/_crbrvs/"
-              class="contact-card-text"
-              target="_blank"
-              rel="noopener noreferrer"
-              >instagram.com/_crbrvs<span class="visually-hidden"> (opens in a new tab)</span></a
-            >
+              <a
+                href="https://www.instagram.com/_crbrvs/"
+                class="contact-card-text"
+                target="_blank"
+                rel="noopener noreferrer"
+                >instagram.com/_crbrvs<span class="visually-hidden">
+                  (opens in a new tab)</span
+                ></a
+              >
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="col-md-5 col-sm-5 p-3">
-      <div class="card contact-card hover-card">
-        <form [formGroup]="contactMeForm" (ngSubmit)="onSubmit()">
-          <div class="mb-3">
-            <label for="name" class="form-label text-style-1-color"
-              >Name:</label
-            >
-            <input
-              id="name"
-              class="form-control"
-              formControlName="name"
-              name="name"
-              type="text"
-              placeholder="Your name"
-              autocomplete="name"
-              aria-required="true"
-              [attr.aria-invalid]="isNameInvalid ? 'true' : null"
-              [attr.aria-describedby]="isNameInvalid ? 'name-error' : null"
-              [class.is-invalid]="isNameInvalid"
-            />
-            @if (isNameInvalid) {
-            <div class="invalid-feedback" id="name-error">
-              @if (name?.errors?.['required']) {
-              <div>Your name is required.</div>
+      <div class="col-md-5 col-sm-5 p-3">
+        <div class="card contact-card hover-card">
+          <form [formRoot]="contactForm">
+            @let name = contactForm.name();
+            @let nameError = name.touched() && name.invalid();
+            <div class="mb-3">
+              <label for="name" class="form-label text-style-1-color"
+                >Name:</label
+              >
+              <input
+                id="name"
+                class="form-control"
+                type="text"
+                placeholder="Your name"
+                autocomplete="name"
+                [formField]="contactForm.name"
+                [class.is-invalid]="nameError"
+                [attr.aria-invalid]="nameError"
+                [attr.aria-describedby]="nameError ? 'name-error' : null"
+              />
+              @if (nameError) {
+                <div class="invalid-feedback" id="name-error">
+                  {{ name.errors()[0].message }}
+                </div>
               }
             </div>
-            }
-          </div>
-          <div class="mb-3">
-            <label for="email" class="form-label text-style-1-color"
-              >E-mail:</label
-            >
-            <input
-              id="email"
-              class="form-control"
-              formControlName="email"
-              name="email"
-              type="email"
-              placeholder="Your E-mail address"
-              autocomplete="email"
-              aria-required="true"
-              [attr.aria-invalid]="isEmailInvalid ? 'true' : null"
-              [attr.aria-describedby]="isEmailInvalid ? 'email-error' : null"
-              [class.is-invalid]="isEmailInvalid"
-            />
-            @if (isEmailInvalid) {
-            <div class="invalid-feedback" id="email-error">
-              @if (email?.errors?.['required']) {
-              <div>Your E-mail is required.</div>
-              } @if (email?.errors?.['email']) {
-              <div>A valid E-mail is required.</div>
+            @let email = contactForm.email();
+            @let emailError = email.touched() && email.invalid();
+            <div class="mb-3">
+              <label for="email" class="form-label text-style-1-color"
+                >E-mail:</label
+              >
+              <input
+                id="email"
+                class="form-control"
+                type="email"
+                placeholder="Your E-mail address"
+                autocomplete="email"
+                [formField]="contactForm.email"
+                [class.is-invalid]="emailError"
+                [attr.aria-invalid]="emailError"
+                [attr.aria-describedby]="emailError ? 'email-error' : null"
+              />
+              @if (emailError) {
+                <div class="invalid-feedback" id="email-error">
+                  {{ email.errors()[0].message }}
+                </div>
               }
             </div>
-            }
-          </div>
-          <div class="mb-3">
-            <label for="from_message" class="form-label text-style-1-color"
-              >Message:</label
-            >
-            <textarea
-              id="from_message"
-              class="form-control mb-4"
-              formControlName="from_message"
-              name="from_message"
-              placeholder="Your message for me"
-              aria-required="true"
-              [attr.aria-invalid]="isMessageInvalid ? 'true' : null"
-              [attr.aria-describedby]="isMessageInvalid ? 'message-error' : null"
-              [class.is-invalid]="isMessageInvalid"
-              style="height: 10rem"
-            ></textarea>
-            @if (isMessageInvalid) {
-            <div class="invalid-feedback" id="message-error">
-              @if (from_message?.errors?.['required']) {
-              <div>A message is required.</div>
+            @let message = contactForm.message();
+            @let messageError = message.touched() && message.invalid();
+            <div class="mb-3">
+              <label for="message" class="form-label text-style-1-color"
+                >Message:</label
+              >
+              <textarea
+                id="message"
+                class="form-control mb-4"
+                placeholder="Your message for me"
+                [formField]="contactForm.message"
+                [class.is-invalid]="messageError"
+                [attr.aria-invalid]="messageError"
+                [attr.aria-describedby]="messageError ? 'message-error' : null"
+                style="height: 10rem"
+              ></textarea>
+              @if (messageError) {
+                <div class="invalid-feedback" id="message-error">
+                  {{ message.errors()[0].message }}
+                </div>
               }
             </div>
-            }
-          </div>
-          <div class="d-grid">
-            <button class="w-100 my-2" type="submit">Send message!</button>
-          </div>
-        </form>
-        @if (isEmailModalOpen()) {
-        <div
-          class="send-email-modal"
-          animate.leave="leaving"
-          role="dialog"
-          aria-labelledby="email-popup-text-header"
-          aria-describedby="email-popup-text-paragraph"
-        >
-          <h2 id="email-popup-text-header">{{ emailPopUpHeader() }}</h2>
-          <p id="email-popup-text-paragraph" aria-live="polite">
-            {{ emailPopUpParagraph() }}
-          </p>
-          <button
-            #emailOkButton
-            type="button"
-            class="w-100"
-            (click)="closeEmailModal()"
-          >
-            OK
-          </button>
+            <div class="d-grid">
+              <button
+                class="w-100 my-2"
+                type="submit"
+                [disabled]="contactForm().submitting()"
+              >
+                Send message!
+              </button>
+            </div>
+          </form>
+          @if (isEmailModalOpen()) {
+            <div
+              class="send-email-modal"
+              animate.leave="leaving"
+              role="dialog"
+              aria-labelledby="email-popup-text-header"
+              aria-describedby="email-popup-text-paragraph"
+            >
+              <h2 id="email-popup-text-header">{{ emailPopUpHeader() }}</h2>
+              <p id="email-popup-text-paragraph" aria-live="polite">
+                {{ emailPopUpParagraph() }}
+              </p>
+              <button
+                #emailOkButton
+                type="button"
+                class="w-100"
+                (click)="closeEmailModal()"
+              >
+                OK
+              </button>
+            </div>
+          }
         </div>
-        }
       </div>
     </div>
   </div>
-</div>
 </section>

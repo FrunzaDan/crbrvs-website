@@ -1,5 +1,5 @@
 export interface Song {
-  title: string;
-  artwork: string;
-  src: string;
+  readonly title: string;
+  readonly artwork: string;
+  readonly src: string;
 }

@@ -1,157 +1,80 @@
-import { DOCUMENT } from '@angular/common';
 import { TestBed } from '@angular/core/testing';
-import { Meta } from '@angular/platform-browser';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { SeoService } from './seo.service';
+import { Title } from '@angular/platform-browser';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { SeoService, SITE_URL } from './seo.service';
 
 describe('SeoService', () => {
   let service: SeoService;
-  let meta: { updateTag: ReturnType<typeof vi.fn> };
-  let document: Document;
+
+  const metaContent = (selector: string) =>
+    document.head.querySelector(`meta[${selector}]`)?.getAttribute('content');
+  const canonicalLinks = () =>
+    document.head.querySelectorAll('link[rel="canonical"]');
 
   beforeEach(() => {
-    meta = { updateTag: vi.fn() };
+    document.head
+      .querySelectorAll('link[rel="canonical"], meta[name], meta[property]')
+      .forEach((element) => element.remove());
 
-    TestBed.configureTestingModule({
-      providers: [{ provide: Meta, useValue: meta }],
-    });
-
+    TestBed.configureTestingModule({});
     service = TestBed.inject(SeoService);
-    document = TestBed.inject(DOCUMENT);
-
-    document
-      .querySelectorAll('link[rel="canonical"]')
-      .forEach((link) => link.remove());
   });
 
-  it('updates the standard, og, and twitter meta tags', () => {
+  it('sets the description and the social tags from the page title', () => {
+    TestBed.inject(Title).setTitle('404 - CRBRVS Rap Hive');
     service.updateMetaTags({
-      description: 'A description',
-      ogTitle: 'A title',
-      ogDescription: 'An og description',
-      canonicalUrl: 'https://example.com/page',
+      description: 'The page does not exist.',
+      path: '/404',
     });
 
-    expect(meta.updateTag).toHaveBeenCalledWith({
-      name: 'description',
-      content: 'A description',
-    });
-    expect(meta.updateTag).toHaveBeenCalledWith({
-      property: 'og:title',
-      content: 'A title',
-    });
-    expect(meta.updateTag).toHaveBeenCalledWith({
-      property: 'og:description',
-      content: 'An og description',
-    });
-    expect(meta.updateTag).toHaveBeenCalledWith({
-      name: 'twitter:title',
-      content: 'A title',
-    });
-    expect(meta.updateTag).toHaveBeenCalledWith({
-      name: 'twitter:description',
-      content: 'An og description',
-    });
-    expect(meta.updateTag).toHaveBeenCalledWith({
-      property: 'og:url',
-      content: 'https://example.com/page',
-    });
-    expect(meta.updateTag).toHaveBeenCalledWith({
-      name: 'twitter:url',
-      content: 'https://example.com/page',
-    });
+    expect(metaContent('name="description"')).toBe('The page does not exist.');
+    expect(metaContent('property="og:title"')).toBe('404 - CRBRVS Rap Hive');
+    expect(metaContent('property="og:description"')).toBe(
+      'The page does not exist.',
+    );
+    expect(metaContent('property="og:url"')).toBe(`${SITE_URL}/404`);
+    expect(metaContent('name="twitter:url"')).toBe(`${SITE_URL}/404`);
   });
 
-  it('defaults the robots tag when none is provided', () => {
-    service.updateMetaTags({
-      description: 'A description',
-      ogTitle: 'A title',
-      ogDescription: 'An og description',
-      canonicalUrl: 'https://example.com/page',
-    });
+  it('lets search engines index pages unless told otherwise', () => {
+    service.updateMetaTags({ description: 'Home', path: '/' });
+    expect(metaContent('name="robots"')).toContain('index, follow');
 
-    expect(meta.updateTag).toHaveBeenCalledWith({
-      name: 'robots',
-      content:
-        'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1',
-    });
-  });
-
-  it('uses the provided robots tag when given', () => {
     service.updateMetaTags({
-      description: 'A description',
-      ogTitle: 'A title',
-      ogDescription: 'An og description',
-      canonicalUrl: 'https://example.com/page',
+      description: '404',
+      path: '/404',
       robots: 'noindex, nofollow',
     });
-
-    expect(meta.updateTag).toHaveBeenCalledWith({
-      name: 'robots',
-      content: 'noindex, nofollow',
-    });
+    expect(metaContent('name="robots"')).toBe('noindex, nofollow');
   });
 
-  it('only sets og:image and twitter:image when an image is provided', () => {
-    service.updateMetaTags({
-      description: 'A description',
-      ogTitle: 'A title',
-      ogDescription: 'An og description',
-      canonicalUrl: 'https://example.com/page',
-    });
+  it('uses the English locale unless given another one', () => {
+    service.updateMetaTags({ description: 'Home', path: '/' });
+    expect(metaContent('property="og:locale"')).toBe('en_US');
+  });
 
-    expect(meta.updateTag).not.toHaveBeenCalledWith(
-      expect.objectContaining({ property: 'og:image' }),
+  it('sets a preview image only for pages that have one', () => {
+    service.updateMetaTags({ description: 'Home', path: '/' });
+    expect(metaContent('property="og:image"')).toBeUndefined();
+
+    service.updateMetaTags({
+      description: 'Home',
+      path: '/',
+      image: '/assets/images/crbrvs_logo.png',
+    });
+    expect(metaContent('property="og:image"')).toBe(
+      `${SITE_URL}/assets/images/crbrvs_logo.png`,
     );
-
-    meta.updateTag.mockClear();
-
-    service.updateMetaTags({
-      description: 'A description',
-      ogTitle: 'A title',
-      ogDescription: 'An og description',
-      canonicalUrl: 'https://example.com/page',
-      ogImage: 'https://example.com/image.png',
-    });
-
-    expect(meta.updateTag).toHaveBeenCalledWith({
-      property: 'og:image',
-      content: 'https://example.com/image.png',
-    });
-    expect(meta.updateTag).toHaveBeenCalledWith({
-      name: 'twitter:image',
-      content: 'https://example.com/image.png',
-    });
+    expect(metaContent('name="twitter:image"')).toBe(
+      `${SITE_URL}/assets/images/crbrvs_logo.png`,
+    );
   });
 
-  it('creates a canonical link tag when none exists', () => {
-    service.updateMetaTags({
-      description: 'A description',
-      ogTitle: 'A title',
-      ogDescription: 'An og description',
-      canonicalUrl: 'https://example.com/page',
-    });
+  it('reuses one canonical link and drops the trailing slash for the home page', () => {
+    service.updateMetaTags({ description: '404', path: '/404' });
+    service.updateMetaTags({ description: 'Home', path: '/' });
 
-    const link = document.querySelector('link[rel="canonical"]');
-    expect(link?.getAttribute('href')).toBe('https://example.com/page');
-  });
-
-  it('reuses and updates an existing canonical link tag', () => {
-    service.updateMetaTags({
-      description: 'A description',
-      ogTitle: 'A title',
-      ogDescription: 'An og description',
-      canonicalUrl: 'https://example.com/first',
-    });
-    service.updateMetaTags({
-      description: 'A description',
-      ogTitle: 'A title',
-      ogDescription: 'An og description',
-      canonicalUrl: 'https://example.com/second',
-    });
-
-    const links = document.querySelectorAll('link[rel="canonical"]');
-    expect(links.length).toBe(1);
-    expect(links[0].getAttribute('href')).toBe('https://example.com/second');
+    expect(canonicalLinks().length).toBe(1);
+    expect(canonicalLinks()[0].getAttribute('href')).toBe(SITE_URL);
   });
 });

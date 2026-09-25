@@ -49,7 +49,7 @@ Every component and service has a co-located `*.spec.ts` — there's no separate
 
 ```bash
 npm install
-npm start          # ng serve, http://localhost:4202
+npm start          # ng serve, http://localhost:4207
 npm run build       # production build (SSR + prerender) into dist/crbrvs-website
 npm run watch       # development build, rebuilds on file changes
 npm test            # Vitest, watch mode

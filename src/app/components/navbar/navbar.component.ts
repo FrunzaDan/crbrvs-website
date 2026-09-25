@@ -1,10 +1,5 @@
 import { NgOptimizedImage, ViewportScroller } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  inject,
-  signal,
-} from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { HamburgerButtonComponent } from '../hamburger-button/hamburger-button.component';
 
@@ -13,15 +8,14 @@ import { HamburgerButtonComponent } from '../hamburger-button/hamburger-button.c
   imports: [RouterModule, HamburgerButtonComponent, NgOptimizedImage],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NavbarComponent {
   private readonly viewportScroller = inject(ViewportScroller);
   private readonly router = inject(Router);
 
-  isMenuOpen = signal(false);
+  readonly isMenuOpen = signal(false);
 
-  public scrollToSection(elementId: string): void {
+  scrollToSection(elementId: string): void {
     if (!elementId) {
       console.warn('scrollToSection: Invalid element ID provided.');
       return;
@@ -31,11 +25,11 @@ export class NavbarComponent {
     this.closeMenu();
   }
 
-  onToggleMenu(isOpen: boolean) {
+  onToggleMenu(isOpen: boolean): void {
     this.isMenuOpen.set(isOpen);
   }
 
-  closeMenu() {
+  closeMenu(): void {
     this.isMenuOpen.set(false);
   }
 }

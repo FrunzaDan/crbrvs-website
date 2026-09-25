@@ -1,43 +1,40 @@
 import {
-  ChangeDetectionStrategy,
   Component,
   OnDestroy,
-  OnInit,
   computed,
+  effect,
   inject,
   signal,
+  untracked,
 } from '@angular/core';
 import { NgOptimizedImage } from '@angular/common';
-import { Song } from '../../interfaces/song';
-import { LoadMusicService } from '../../services/load-music.service';
+import { MusicCatalogService } from '../../services/music-catalog.service';
 
 @Component({
   selector: 'app-music-player',
-  standalone: true,
   imports: [NgOptimizedImage],
   templateUrl: './music-player.component.html',
   styleUrl: './music-player.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MusicPlayerComponent implements OnInit, OnDestroy {
-  private readonly loadMusicService = inject(LoadMusicService);
-
+export class MusicPlayerComponent implements OnDestroy {
   private static readonly SCRUB_ACTIVATION_DELAY_MS = 300;
   private static readonly SCRUB_TICK_MS = 150;
   private static readonly SCRUB_ACCEL_INTERVAL_MS = 1000;
   private static readonly SCRUB_MAX_STEP_SECONDS = 8;
   private static readonly SEEK_STEP_SECONDS = 5;
 
-  songs = signal<Song[]>([]);
-  currentSong = signal<Song | null>(null);
-  isPlaying = signal<boolean>(false);
-  currentTime = signal<number>(0);
-  currentAudioDuration = signal<number>(0);
-  currentIndex = signal<number>(0);
+  readonly songs = inject(MusicCatalogService).songs;
+  readonly currentIndex = signal(0);
+  readonly currentSong = computed(
+    () => this.songs()[this.currentIndex()] ?? null,
+  );
+  readonly isPlaying = signal(false);
+  readonly currentTime = signal(0);
+  readonly currentAudioDuration = signal(0);
 
   readonly scrubDirection = signal<1 | -1 | null>(null);
-  readonly scrubStep = signal<number>(1);
-  readonly isDraggingProgress = signal<boolean>(false);
+  readonly scrubStep = signal(1);
+  readonly isDraggingProgress = signal(false);
 
   readonly formattedCurrentTime = computed(() =>
     this.formatTime(this.currentTime()),
@@ -70,30 +67,26 @@ export class MusicPlayerComponent implements OnInit, OnDestroy {
     this.isPlaying.set(false);
   };
 
-  ngOnInit(): void {
-    const loadedSongs = this.loadMusicService.loadMusic();
-    this.songs.set(loadedSongs);
-
-    if (loadedSongs.length > 0) {
-      this.initializeFirstSong();
-    }
+  constructor() {
+    // Set up the first song's audio as soon as the song list has loaded, so its
+    // duration shows before anything is played.
+    effect(() => {
+      if (this.currentSong() && !this.audio) {
+        untracked(() => this.initializeAudio());
+      }
+    });
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.cancelScrub();
     this.cleanup();
   }
 
-  private initializeFirstSong(): void {
-    this.currentSong.set(this.songs()[0]);
-    this.currentIndex.set(0);
-    this.initializeAudio();
-  }
-
   private initializeAudio(): void {
-    if (typeof window !== 'undefined' && this.currentSong()) {
+    const song = this.currentSong();
+    if (typeof window !== 'undefined' && song) {
       this.cleanup(); // Clean up previous audio instance
-      this.audio = new Audio(this.currentSong()!.src);
+      this.audio = new Audio(song.src);
 
       this.audio.addEventListener('loadedmetadata', this.onLoadedMetadata);
       this.audio.addEventListener('ended', this.onEnded);
@@ -180,7 +173,6 @@ export class MusicPlayerComponent implements OnInit, OnDestroy {
   private changeSong(newIndex: number): void {
     this.stopSong();
     this.currentIndex.set(newIndex);
-    this.currentSong.set(this.songs()[newIndex]);
     this.initializeAudio();
     this.startPlayback();
   }

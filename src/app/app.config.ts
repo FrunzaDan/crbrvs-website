@@ -3,10 +3,11 @@ import {
   provideBrowserGlobalErrorListeners,
   provideZonelessChangeDetection,
 } from '@angular/core';
+import { provideHttpClient, withFetch } from '@angular/common/http';
 import {
   provideClientHydration,
   withEventReplay,
-  withNoIncrementalHydration
+  withNoIncrementalHydration,
 } from '@angular/platform-browser';
 import {
   provideRouter,
@@ -27,6 +28,7 @@ export const appConfig: ApplicationConfig = {
       withViewTransitions(),
     ),
     provideClientHydration(withEventReplay(), withNoIncrementalHydration()),
+    provideHttpClient(withFetch()),
     provideZonelessChangeDetection(),
   ],
 };

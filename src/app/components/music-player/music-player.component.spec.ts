@@ -1,13 +1,15 @@
+import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import {
-  afterEach,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { Song } from '../../interfaces/song';
+import { MusicCatalogService } from '../../services/music-catalog.service';
 import { MusicPlayerComponent } from './music-player.component';
+
+const songs: readonly Song[] = [
+  { title: 'One', artwork: '/one.webp', src: '/one.mp3' },
+  { title: 'Two', artwork: '/two.webp', src: '/two.mp3' },
+  { title: 'Three', artwork: '/three.webp', src: '/three.mp3' },
+];
 
 describe('MusicPlayerComponent', () => {
   let fixture: ComponentFixture<MusicPlayerComponent>;
@@ -60,6 +62,9 @@ describe('MusicPlayerComponent', () => {
 
     TestBed.configureTestingModule({
       imports: [MusicPlayerComponent],
+      providers: [
+        { provide: MusicCatalogService, useValue: { songs: signal(songs) } },
+      ],
     });
 
     fixture = TestBed.createComponent(MusicPlayerComponent);
@@ -80,7 +85,7 @@ describe('MusicPlayerComponent', () => {
     vi.useRealTimers();
   });
 
-  it('loads the first song on init without autoplaying', () => {
+  it('loads the first song once the list is in, without autoplaying', () => {
     expect(component.songs().length).toBeGreaterThan(0);
     expect(component.currentSong()).toEqual(component.songs()[0]);
     expect(component.currentIndex()).toBe(0);
@@ -408,9 +413,7 @@ describe('MusicPlayerComponent', () => {
 
   describe('DOM wiring', () => {
     function button(label: string): HTMLButtonElement {
-      const el = fixture.nativeElement.querySelector(
-        `[aria-label="${label}"]`,
-      );
+      const el = fixture.nativeElement.querySelector(`[aria-label="${label}"]`);
       if (!el) {
         throw new Error(`No button found with aria-label "${label}"`);
       }

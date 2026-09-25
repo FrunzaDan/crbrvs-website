@@ -1,16 +1,11 @@
 import { bootstrapApplication } from '@angular/platform-browser';
 import { getAnalytics } from 'firebase/analytics';
-import { initializeApp } from 'firebase/app';
-import { environment } from '../src/environments/environment';
-import { AppComponent } from './app/app';
+import { App } from './app/app';
 import { appConfig } from './app/app.config';
+import { firebaseApp } from './app/firebase';
 
-bootstrapApplication(AppComponent, appConfig).catch((err) =>
-  console.error(err),
-);
-
-const app = initializeApp(environment.firebaseConfig);
+bootstrapApplication(App, appConfig).catch((err) => console.error(err));
 
 if (typeof window !== 'undefined') {
-  getAnalytics(app);
+  getAnalytics(firebaseApp);
 }

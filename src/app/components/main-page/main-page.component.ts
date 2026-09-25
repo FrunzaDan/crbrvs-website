@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { BackToTopComponent } from '../back-to-top/back-to-top.component';
 import { ContactComponent } from '../contact/contact.component';
 import { FooterComponent } from '../footer/footer.component';
@@ -19,7 +19,6 @@ import { SeoService } from '../../services/seo.service';
   ],
   templateUrl: './main-page.component.html',
   styleUrl: './main-page.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MainPageComponent implements OnInit {
   private readonly seoService = inject(SeoService);
@@ -27,12 +26,9 @@ export class MainPageComponent implements OnInit {
   ngOnInit(): void {
     this.seoService.updateMetaTags({
       description:
-        "Welcome to the official website of Cerga Andrei, known as CRBRVS. Discover his latest music, merch, and connect with him online.",
-      ogTitle: 'CRBRVS Rap Hive',
-      ogDescription:
-        'The Website of the rapper Cerga Andrei, named CRBRVS, based in Romania. His music, merch and contacts are highlighted.',
-      ogImage: 'https://crbrvsraphive.com/assets/images/crbrvs_logo.png',
-      canonicalUrl: 'https://crbrvsraphive.com',
+        'Welcome to the official website of Cerga Andrei, known as CRBRVS. Discover his latest music, merch, and connect with him online.',
+      path: '/',
+      image: '/assets/images/crbrvs_logo.png',
     });
   }
 }

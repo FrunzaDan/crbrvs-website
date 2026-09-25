@@ -1,30 +1,26 @@
-import { DOCUMENT } from '@angular/common';
 import {
-  ChangeDetectionStrategy,
   Component,
+  DOCUMENT,
   ElementRef,
-  HostListener,
   Injector,
   afterNextRender,
   inject,
   signal,
   viewChild,
 } from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
-import { SendEmailService } from '../../services/send-email.service';
+import { FormField, FormRoot, form } from '@angular/forms/signals';
 import { ContactMeForm } from '../../interfaces/contact-me-form';
+import { SendEmailService } from '../../services/send-email.service';
+import { contactFormSchema, emptyContactForm } from './contact-form';
 
 @Component({
   selector: 'app-contact',
-  imports: [ReactiveFormsModule],
+  imports: [FormField, FormRoot],
   templateUrl: './contact.component.html',
   styleUrl: './contact.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    '(document:keydown.escape)': 'onEscape()',
+  },
 })
 export class ContactComponent {
   private readonly sendEmailService = inject(SendEmailService);
@@ -32,94 +28,37 @@ export class ContactComponent {
   private readonly injector = inject(Injector);
   private focusBeforeModal: HTMLElement | null = null;
 
-  readonly emailOkButton = viewChild<ElementRef<HTMLButtonElement>>('emailOkButton');
+  private readonly emailOkButton =
+    viewChild<ElementRef<HTMLButtonElement>>('emailOkButton');
 
-  isEmailModalOpen = signal(false);
-  emailPopUpHeader = signal('');
-  emailPopUpParagraph = signal('');
-  submitted = signal(false);
+  readonly isEmailModalOpen = signal(false);
+  readonly emailPopUpHeader = signal('');
+  readonly emailPopUpParagraph = signal('');
 
-  contactMeForm = new FormGroup({
-    name: new FormControl('', [Validators.required]),
-    email: new FormControl('', [Validators.required, Validators.email]),
-    from_message: new FormControl('', [Validators.required]),
+  readonly model = signal<ContactMeForm>(emptyContactForm());
+  readonly contactForm = form(this.model, contactFormSchema, {
+    submission: {
+      action: () => this.send(),
+      onInvalid: (field) =>
+        field().errorSummary()[0]?.fieldTree().focusBoundControl(),
+    },
   });
 
-  get name() {
-    return this.contactMeForm.get('name');
-  }
-  get email() {
-    return this.contactMeForm.get('email');
-  }
-  get from_message() {
-    return this.contactMeForm.get('from_message');
-  }
-
-  get isNameInvalid(): boolean {
-    return !!(this.submitted() && this.name?.errors);
-  }
-
-  get isEmailInvalid(): boolean {
-    return !!(this.submitted() && this.email?.errors);
-  }
-
-  get isMessageInvalid(): boolean {
-    return !!(this.submitted() && this.from_message?.errors);
-  }
-
-  async onSubmit() {
-    this.submitted.set(true);
-
-    if (this.contactMeForm.invalid) {
-      // Mark all fields as touched to trigger validation display
-      Object.keys(this.contactMeForm.controls).forEach((key) => {
-        const control = this.contactMeForm.get(key);
-        control?.markAsTouched();
-      });
-      return;
-    }
-
+  private async send(): Promise<void> {
     this.openEmailModal();
-    this.emailPopUpHeader.set('Hi, ' + this.contactMeForm.value.name);
+    this.emailPopUpHeader.set('Hi, ' + this.model().name);
     this.emailPopUpParagraph.set('Sending...');
 
     try {
-      const responseCode = await this.sendEmailService.sendEmailJS(
-        this.contactMeForm.value as ContactMeForm,
+      await this.sendEmailService.sendEmailJS(this.model());
+      this.emailPopUpParagraph.set('Your message was successfully sent!');
+      this.contactForm().reset(emptyContactForm());
+    } catch (error: unknown) {
+      console.error('Error sending the contact message:', error);
+      this.emailPopUpParagraph.set(
+        'Our servers are full, please send an E-mail to crbrvsraps@gmail.com.',
       );
-
-      if (responseCode === 200) {
-        this.handleSuccessfulSubmission();
-      } else {
-        this.handleFailedSubmission(responseCode);
-      }
-    } catch (error) {
-      this.handleFailedSubmission(500);
-      console.error('Error sending email:', error);
     }
-    this.resetForm();
-  }
-
-  private handleSuccessfulSubmission(): void {
-    this.emailPopUpParagraph.set('Your message was successfully sent! ');
-  }
-
-  private handleFailedSubmission(responseCode: number): void {
-    this.emailPopUpParagraph.set(
-      `(${responseCode}) Our servers are full, please send an E-mail to crbrvsraps@gmail.com.`,
-    );
-  }
-
-  private resetForm(): void {
-    this.submitted.set(false);
-    this.contactMeForm.reset();
-    Object.keys(this.contactMeForm.controls).forEach((key) => {
-      const control = this.contactMeForm.get(key);
-      control?.setErrors(null);
-      control?.markAsUntouched();
-      control?.markAsPristine();
-      control?.updateValueAndValidity();
-    });
   }
 
   /** Opens the popup and moves keyboard focus into it, remembering where it came from. */
@@ -132,13 +71,12 @@ export class ContactComponent {
     });
   }
 
-  closeEmailModal() {
+  closeEmailModal(): void {
     this.isEmailModalOpen.set(false);
     this.focusBeforeModal?.focus({ preventScroll: true });
     this.focusBeforeModal = null;
   }
 
-  @HostListener('document:keydown.escape')
   onEscape(): void {
     if (this.isEmailModalOpen()) {
       this.closeEmailModal();

@@ -1,12 +1,9 @@
-import { isPlatformBrowser, NgOptimizedImage } from '@angular/common';
+import { NgOptimizedImage } from '@angular/common';
 import {
-  AfterViewInit,
-  ChangeDetectionStrategy,
   Component,
   ElementRef,
-  PLATFORM_ID,
-  ViewChild,
-  inject,
+  afterNextRender,
+  viewChild,
 } from '@angular/core';
 import { MusicPlayerComponent } from '../music-player/music-player.component';
 
@@ -15,24 +12,23 @@ import { MusicPlayerComponent } from '../music-player/music-player.component';
   imports: [MusicPlayerComponent, NgOptimizedImage],
   templateUrl: './music.component.html',
   styleUrl: './music.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MusicComponent implements AfterViewInit {
-  private readonly platformId = inject(PLATFORM_ID);
+export class MusicComponent {
+  private readonly teaserVideo =
+    viewChild<ElementRef<HTMLVideoElement>>('teaserVideo');
 
-  @ViewChild('teaserVideo') teaserVideoRef?: ElementRef<HTMLVideoElement>;
+  constructor() {
+    // Render hooks only run in the browser, so this never touches `window` on the server.
+    afterNextRender(() => {
+      const prefersReducedMotion = window.matchMedia(
+        '(prefers-reduced-motion: reduce)',
+      ).matches;
 
-  ngAfterViewInit(): void {
-    if (!isPlatformBrowser(this.platformId)) {
-      return;
-    }
-
-    const prefersReducedMotion = window.matchMedia(
-      '(prefers-reduced-motion: reduce)',
-    ).matches;
-
-    if (!prefersReducedMotion) {
-      this.teaserVideoRef?.nativeElement.play().catch(() => {});
-    }
+      if (!prefersReducedMotion) {
+        this.teaserVideo()
+          ?.nativeElement.play()
+          .catch(() => {});
+      }
+    });
   }
 }

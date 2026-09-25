@@ -1,7 +1,8 @@
+import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { MerchItem } from '../../interfaces/merch-item';
-import { LoadMerchService } from '../../services/load-merch.service';
+import { MerchCatalogService } from '../../services/merch-catalog.service';
 import { ScrollerService } from '../../services/scroller.service';
 import { MerchComponent } from './merch.component';
 
@@ -13,7 +14,7 @@ describe('MerchComponent', () => {
     scrollToRight: ReturnType<typeof vi.fn>;
   };
 
-  const merchItems: MerchItem[] = [
+  const merchItems: readonly MerchItem[] = [
     {
       id: 1,
       title: 'Tee',
@@ -41,8 +42,8 @@ describe('MerchComponent', () => {
       imports: [MerchComponent],
       providers: [
         {
-          provide: LoadMerchService,
-          useValue: { loadMerch: vi.fn().mockReturnValue(merchItems) },
+          provide: MerchCatalogService,
+          useValue: { items: signal(merchItems), hasLoadError: signal(false) },
         },
         { provide: ScrollerService, useValue: scrollerService },
       ],
@@ -53,7 +54,7 @@ describe('MerchComponent', () => {
     fixture.detectChanges();
   });
 
-  it('loads merch items from the service on init', () => {
+  it('shows the merch items from the catalog', () => {
     expect(component.merchItems()).toEqual(merchItems);
   });
 

@@ -31,9 +31,8 @@ describe('MainPageComponent', () => {
 
     expect(seoService.updateMetaTags).toHaveBeenCalledWith(
       expect.objectContaining({
-        ogTitle: 'CRBRVS Rap Hive',
-        canonicalUrl: 'https://crbrvsraphive.com',
-        ogImage: 'https://crbrvsraphive.com/assets/images/crbrvs_logo.png',
+        path: '/',
+        image: '/assets/images/crbrvs_logo.png',
       }),
     );
   });

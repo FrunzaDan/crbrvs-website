@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { ContactMeForm } from '../../interfaces/contact-me-form';
 import { SendEmailService } from '../../services/send-email.service';
 import { ContactComponent } from './contact.component';
 
@@ -8,174 +9,128 @@ describe('ContactComponent', () => {
   let component: ContactComponent;
   let sendEmailService: { sendEmailJS: ReturnType<typeof vi.fn> };
 
-  beforeEach(() => {
+  const validForm: ContactMeForm = {
+    name: 'Jane Doe',
+    email: 'jane@example.com',
+    message: 'Hello there',
+  };
+
+  const field = (id: string) =>
+    fixture.nativeElement.querySelector(`#${id}`) as HTMLInputElement;
+
+  const submitForm = async (): Promise<void> => {
+    fixture.nativeElement
+      .querySelector('form')
+      .dispatchEvent(new Event('submit'));
+    await fixture.whenStable();
+  };
+
+  beforeEach(async () => {
     sendEmailService = { sendEmailJS: vi.fn() };
 
     TestBed.configureTestingModule({
       imports: [ContactComponent],
-      providers: [
-        { provide: SendEmailService, useValue: sendEmailService },
-      ],
+      providers: [{ provide: SendEmailService, useValue: sendEmailService }],
     });
 
     fixture = TestBed.createComponent(ContactComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
+    await fixture.whenStable();
   });
 
-  function fillValidForm(): void {
-    component.contactMeForm.setValue({
-      name: 'Jane Doe',
-      email: 'jane@example.com',
-      from_message: 'Hello there',
-    });
-  }
-
-  describe('validation getters', () => {
-    it('report no errors before the form is submitted', () => {
-      expect(component.isNameInvalid).toBe(false);
-      expect(component.isEmailInvalid).toBe(false);
-      expect(component.isMessageInvalid).toBe(false);
-    });
-
-    it('report errors for empty required fields after submission', async () => {
-      await component.onSubmit();
-
-      expect(component.isNameInvalid).toBe(true);
-      expect(component.isEmailInvalid).toBe(true);
-      expect(component.isMessageInvalid).toBe(true);
-      expect(sendEmailService.sendEmailJS).not.toHaveBeenCalled();
+  describe('validation', () => {
+    it('requires every field', () => {
+      expect(component.contactForm().invalid()).toBe(true);
+      expect(component.contactForm.name().errors()[0].message).toBe(
+        'Your name is required.',
+      );
+      expect(component.contactForm.email().errors()[0].message).toBe(
+        'Your E-mail is required.',
+      );
+      expect(component.contactForm.message().errors()[0].message).toBe(
+        'A message is required.',
+      );
     });
 
-    it('flags an invalid email format after submission', async () => {
-      component.contactMeForm.setValue({
-        name: 'Jane Doe',
-        email: 'not-an-email',
-        from_message: 'Hello there',
-      });
+    it('flags an invalid email format', () => {
+      component.model.set({ ...validForm, email: 'not-an-email' });
 
-      await component.onSubmit();
+      expect(component.contactForm.email().errors()[0].message).toBe(
+        'A valid E-mail is required.',
+      );
+    });
 
-      expect(component.isEmailInvalid).toBe(true);
-      expect(component.isNameInvalid).toBe(false);
-      expect(component.isMessageInvalid).toBe(false);
+    it('does not accept a message of only spaces', () => {
+      component.model.set({ ...validForm, message: '   ' });
+
+      expect(component.contactForm.message().invalid()).toBe(true);
+    });
+
+    it('accepts a filled-in form', () => {
+      component.model.set(validForm);
+
+      expect(component.contactForm().valid()).toBe(true);
     });
   });
 
-  describe('onSubmit', () => {
+  describe('submitting', () => {
     it('does not call the email service when the form is invalid', async () => {
-      await component.onSubmit();
+      await submitForm();
 
       expect(sendEmailService.sendEmailJS).not.toHaveBeenCalled();
       expect(component.isEmailModalOpen()).toBe(false);
     });
 
-    it('opens the modal and shows a success message on a 200 response', async () => {
-      fillValidForm();
-      sendEmailService.sendEmailJS.mockResolvedValue(200);
+    it('opens the modal and shows a success message when the email is sent', async () => {
+      sendEmailService.sendEmailJS.mockResolvedValue(undefined);
+      component.model.set(validForm);
 
-      await component.onSubmit();
+      await submitForm();
 
-      expect(sendEmailService.sendEmailJS).toHaveBeenCalledWith({
-        name: 'Jane Doe',
-        email: 'jane@example.com',
-        from_message: 'Hello there',
-      });
+      expect(sendEmailService.sendEmailJS).toHaveBeenCalledWith(validForm);
       expect(component.isEmailModalOpen()).toBe(true);
       expect(component.emailPopUpHeader()).toBe('Hi, Jane Doe');
       expect(component.emailPopUpParagraph()).toBe(
-        'Your message was successfully sent! ',
-      );
-    });
-
-    it('shows a failure message when the service returns a non-200 response', async () => {
-      fillValidForm();
-      sendEmailService.sendEmailJS.mockResolvedValue(503);
-
-      await component.onSubmit();
-
-      expect(component.emailPopUpParagraph()).toBe(
-        '(503) Our servers are full, please send an E-mail to crbrvsraps@gmail.com.',
-      );
-    });
-
-    it('shows a failure message when the service throws', async () => {
-      fillValidForm();
-      sendEmailService.sendEmailJS.mockRejectedValue(new Error('network error'));
-      vi.spyOn(console, 'error').mockImplementation(() => {});
-
-      await component.onSubmit();
-
-      expect(component.emailPopUpParagraph()).toBe(
-        '(500) Our servers are full, please send an E-mail to crbrvsraps@gmail.com.',
+        'Your message was successfully sent!',
       );
     });
 
     it('resets the form after a successful submission', async () => {
-      fillValidForm();
-      sendEmailService.sendEmailJS.mockResolvedValue(200);
+      sendEmailService.sendEmailJS.mockResolvedValue(undefined);
+      component.model.set(validForm);
 
-      await component.onSubmit();
+      await submitForm();
 
-      expect(component.contactMeForm.value).toEqual({
-        name: null,
-        email: null,
-        from_message: null,
-      });
-      expect(component.submitted()).toBe(false);
+      expect(component.model()).toEqual({ name: '', email: '', message: '' });
+      expect(component.contactForm.name().touched()).toBe(false);
     });
 
-    it('also resets the form after a failed submission, discarding the typed message', async () => {
-      fillValidForm();
-      sendEmailService.sendEmailJS.mockResolvedValue(503);
+    it('shows a failure message and keeps what was typed when sending fails', async () => {
+      sendEmailService.sendEmailJS.mockRejectedValue(new Error('network'));
+      vi.spyOn(console, 'error').mockImplementation(() => undefined);
+      component.model.set(validForm);
 
-      await component.onSubmit();
+      await submitForm();
 
-      expect(component.contactMeForm.value).toEqual({
-        name: null,
-        email: null,
-        from_message: null,
-      });
-      expect(component.submitted()).toBe(false);
+      expect(component.isEmailModalOpen()).toBe(true);
+      expect(component.emailPopUpParagraph()).toContain('crbrvsraps@gmail.com');
+      expect(component.model()).toEqual(validForm);
     });
 
-    it('also resets the form after the email service throws', async () => {
-      fillValidForm();
-      sendEmailService.sendEmailJS.mockRejectedValue(new Error('network error'));
-      vi.spyOn(console, 'error').mockImplementation(() => {});
+    it('leaves the form as it is when validation fails, so it can be fixed and resubmitted', async () => {
+      component.model.set({ ...validForm, email: 'nope' });
 
-      await component.onSubmit();
+      await submitForm();
 
-      expect(component.contactMeForm.value).toEqual({
-        name: null,
-        email: null,
-        from_message: null,
-      });
-    });
-
-    it('leaves the form untouched when validation fails, so the user can fix and resubmit', async () => {
-      component.contactMeForm.setValue({
-        name: 'Jane Doe',
-        email: 'not-an-email',
-        from_message: 'Hello there',
-      });
-
-      await component.onSubmit();
-
-      expect(component.contactMeForm.value).toEqual({
-        name: 'Jane Doe',
-        email: 'not-an-email',
-        from_message: 'Hello there',
-      });
+      expect(component.model()).toEqual({ ...validForm, email: 'nope' });
     });
   });
 
   describe('closeEmailModal', () => {
     it('closes the modal', async () => {
-      fillValidForm();
-      sendEmailService.sendEmailJS.mockResolvedValue(200);
-      await component.onSubmit();
-      expect(component.isEmailModalOpen()).toBe(true);
+      sendEmailService.sendEmailJS.mockResolvedValue(undefined);
+      component.model.set(validForm);
+      await submitForm();
 
       component.closeEmailModal();
 
@@ -184,56 +139,53 @@ describe('ContactComponent', () => {
   });
 
   describe('accessibility', () => {
-    const field = (id: string) =>
-      fixture.nativeElement.querySelector(`#${id}`) as HTMLElement;
-
     it('uses autocomplete tokens that match the field purpose', () => {
       expect(field('name').getAttribute('autocomplete')).toBe('name');
       expect(field('email').getAttribute('autocomplete')).toBe('email');
     });
 
     it('marks all fields as required for assistive technology', () => {
-      for (const id of ['name', 'email', 'from_message']) {
-        expect(field(id).getAttribute('aria-required')).toBe('true');
+      for (const id of ['name', 'email', 'message']) {
+        expect(field(id).required).toBe(true);
       }
     });
 
-    it('does not flag fields as invalid before submission', () => {
-      for (const id of ['name', 'email', 'from_message']) {
-        expect(field(id).hasAttribute('aria-invalid')).toBe(false);
+    it('does not flag fields as invalid before they are touched', () => {
+      for (const id of ['name', 'email', 'message']) {
+        expect(field(id).getAttribute('aria-invalid')).not.toBe('true');
         expect(field(id).hasAttribute('aria-describedby')).toBe(false);
       }
     });
 
     it('links each invalid field to its error message after a failed submit', async () => {
-      await component.onSubmit();
-      fixture.detectChanges();
+      await submitForm();
 
-      const expected: Record<string, string> = {
-        name: 'name-error',
-        email: 'email-error',
-        from_message: 'message-error',
-      };
-      for (const [id, errorId] of Object.entries(expected)) {
+      for (const id of ['name', 'email', 'message']) {
         expect(field(id).getAttribute('aria-invalid')).toBe('true');
-        expect(field(id).getAttribute('aria-describedby')).toBe(errorId);
-        expect(document.getElementById(errorId)?.textContent).toMatch(
+        expect(field(id).getAttribute('aria-describedby')).toBe(`${id}-error`);
+        expect(document.getElementById(`${id}-error`)?.textContent).toMatch(
           /required/,
         );
       }
     });
 
+    it('moves focus to the first invalid field after a failed submit', async () => {
+      component.model.set({ ...validForm, email: '' });
+
+      await submitForm();
+
+      expect(document.activeElement).toBe(field('email'));
+    });
+
     describe('result popup', () => {
       async function submitValidForm(): Promise<HTMLButtonElement> {
-        sendEmailService.sendEmailJS.mockResolvedValue(200);
-        fillValidForm();
+        sendEmailService.sendEmailJS.mockResolvedValue(undefined);
+        component.model.set(validForm);
         const submit = fixture.nativeElement.querySelector(
           'button[type="submit"]',
         ) as HTMLButtonElement;
         submit.focus();
-        await component.onSubmit();
-        fixture.detectChanges();
-        await fixture.whenStable();
+        await submitForm();
         return submit;
       }
 
@@ -248,9 +200,9 @@ describe('ContactComponent', () => {
           'email-popup-text-header',
         );
         expect(
-          popup.querySelector('#email-popup-text-paragraph')?.getAttribute(
-            'aria-live',
-          ),
+          popup
+            .querySelector('#email-popup-text-paragraph')
+            ?.getAttribute('aria-live'),
         ).toBe('polite');
       });
 

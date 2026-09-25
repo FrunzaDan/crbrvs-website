@@ -1,14 +1,19 @@
 import { DOCUMENT } from '@angular/common';
-import { Injectable, inject } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Meta } from '@angular/platform-browser';
+
+/** Where the site is published; canonical links and social previews point here. */
+export const SITE_URL = 'https://crbrvsraphive.com';
 
 export interface SeoMetaConfig {
   description: string;
-  ogTitle: string;
-  ogDescription: string;
-  ogImage?: string;
-  canonicalUrl: string;
+  /** The page's path, such as `/404`. */
+  path: string;
+  /** A picture for link previews, such as `/assets/images/crbrvs_logo.png`. */
+  image?: string;
   robots?: string;
+  /** The Open Graph locale of the page's text, `en_US` unless given. */
+  locale?: string;
 }
 
 const DEFAULT_ROBOTS =
@@ -21,32 +26,45 @@ export class SeoService {
   private readonly meta = inject(Meta);
   private readonly document = inject(DOCUMENT);
 
+  /** Call after the page title is set, since the social title is copied from it. */
   updateMetaTags(config: SeoMetaConfig): void {
+    const title = this.document.title;
+    const url = SITE_URL + (config.path === '/' ? '' : config.path);
+
     this.meta.updateTag({ name: 'description', content: config.description });
-    this.meta.updateTag({ property: 'og:title', content: config.ogTitle });
-    this.meta.updateTag({
-      property: 'og:description',
-      content: config.ogDescription,
-    });
-    this.meta.updateTag({ name: 'twitter:title', content: config.ogTitle });
-    this.meta.updateTag({
-      name: 'twitter:description',
-      content: config.ogDescription,
-    });
-
-    if (config.ogImage) {
-      this.meta.updateTag({ property: 'og:image', content: config.ogImage });
-      this.meta.updateTag({ name: 'twitter:image', content: config.ogImage });
-    }
-
-    this.meta.updateTag({ property: 'og:url', content: config.canonicalUrl });
-    this.meta.updateTag({ name: 'twitter:url', content: config.canonicalUrl });
     this.meta.updateTag({
       name: 'robots',
       content: config.robots ?? DEFAULT_ROBOTS,
     });
+    this.meta.updateTag({ property: 'og:title', content: title });
+    this.meta.updateTag({
+      property: 'og:description',
+      content: config.description,
+    });
+    this.meta.updateTag({ property: 'og:url', content: url });
+    this.meta.updateTag({
+      property: 'og:locale',
+      content: config.locale ?? 'en_US',
+    });
+    this.meta.updateTag({ name: 'twitter:title', content: title });
+    this.meta.updateTag({
+      name: 'twitter:description',
+      content: config.description,
+    });
+    this.meta.updateTag({ name: 'twitter:url', content: url });
 
-    this.updateCanonicalUrl(config.canonicalUrl);
+    if (config.image) {
+      this.meta.updateTag({
+        property: 'og:image',
+        content: SITE_URL + config.image,
+      });
+      this.meta.updateTag({
+        name: 'twitter:image',
+        content: SITE_URL + config.image,
+      });
+    }
+
+    this.updateCanonicalUrl(url);
   }
 
   private updateCanonicalUrl(url: string): void {

@@ -1,74 +1,82 @@
 <section aria-labelledby="merch-heading">
-<div class="container-fluid p-2" id="background-image-merch">
-  <div class="row p-2">
-    <div class="section-title">
-      <div class="rectangle-back"></div>
-      <h2 id="merch-heading" class="section-title-intro-text">Merch.</h2>
-      <div class="rectangle-front"></div>
+  <div class="container-fluid p-2" id="background-image-merch">
+    <div class="row p-2">
+      <div class="section-title">
+        <div class="rectangle-back"></div>
+        <h2 id="merch-heading" class="section-title-intro-text">Merch.</h2>
+        <div class="rectangle-front"></div>
+      </div>
     </div>
-  </div>
 
-  <div class="row p-2">
-    <div class="col d-flex justify-content-center align-items-center pb-4">
-      <div class="text-style-1">
-        Wanna wear some spicy shirts? You can have them right now:
+    <div class="row p-2">
+      <div class="col d-flex justify-content-center align-items-center pb-4">
+        <div class="text-style-1">
+          Wanna wear some spicy shirts? You can have them right now:
+        </div>
+      </div>
+    </div>
+
+    <div class="row px-2">
+      <div class="col d-flex justify-content-center align-items-center">
+        <div id="horizontal-scroll-container" #merchScrollContainer>
+          @for (merchItem of merchItems(); track merchItem.id) {
+            <div class="merch-card hover-card">
+              <div class="merch-img-container">
+                <img
+                  class="merch-img"
+                  fill
+                  [ngSrc]="merchItem.src"
+                  [alt]="merchItem.description + ' - CRBRVS merch'"
+                  loading="lazy"
+                />
+              </div>
+              <div class="p-2">
+                <h3 class="pink-color">{{ merchItem.title }}</h3>
+                <p class="pink-color">{{ merchItem.price }} RON</p>
+              </div>
+              <button
+                class="w-100"
+                [attr.aria-label]="
+                  'Seems interesting: ' + merchItem.description
+                "
+                (click)="openMerchItemModal(merchItem)"
+              >
+                Seems interesting
+              </button>
+            </div>
+          } @empty {
+            @if (hasLoadError()) {
+              <p class="pink-color" role="alert">
+                The merch couldn't be loaded. Please try again later.
+              </p>
+            }
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="row px-2">
+      <div class="col d-flex justify-content-center align-items-center pb-4">
+        <button
+          class="player-controls-btn"
+          (click)="scrollLeft()"
+          aria-label="Scroll merch left"
+        >
+          <span class="player-action-icon action-btn-backward"></span>
+        </button>
+        <button
+          class="player-controls-btn"
+          (click)="scrollRight()"
+          aria-label="Scroll merch right"
+        >
+          <span class="player-action-icon action-btn-forward"></span>
+        </button>
       </div>
     </div>
   </div>
-
-  <div class="row px-2">
-    <div class="col d-flex justify-content-center align-items-center">
-      <div id="horizontal-scroll-container" #merchScrollContainer>
-        @for (merchItem of merchItems(); track merchItem.id) {
-          <div class="merch-card hover-card">
-            <div class="merch-img-container">
-              <img
-                class="merch-img"
-                fill
-                [ngSrc]="merchItem.src"
-                [alt]="merchItem.description + ' - CRBRVS merch'"
-                loading="lazy"
-              />
-            </div>
-            <div class="p-2">
-              <h3 class="pink-color">{{ merchItem.title }}</h3>
-              <p class="pink-color">{{ merchItem.price }} RON</p>
-            </div>
-            <button
-              class="w-100"
-              [attr.aria-label]="'Seems interesting: ' + merchItem.description"
-              (click)="openMerchItemModal(merchItem)"
-            >
-              Seems interesting
-            </button>
-          </div>
-        }
-      </div>
-    </div>
-  </div>
-
-  <div class="row px-2">
-    <div class="col d-flex justify-content-center align-items-center pb-4">
-      <button
-        class="player-controls-btn"
-        (click)="scrollLeft()"
-        aria-label="Scroll merch left"
-      >
-        <span class="player-action-icon action-btn-backward"></span>
-      </button>
-      <button
-        class="player-controls-btn"
-        (click)="scrollRight()"
-        aria-label="Scroll merch right"
-      >
-        <span class="player-action-icon action-btn-forward"></span>
-      </button>
-    </div>
-  </div>
-</div>
 </section>
 
-@if (isMerchModalOpen()) {
+@if (selectedMerchItem(); as item) {
   <div
     class="full-view-background"
     animate.leave="leaving"
@@ -87,7 +95,7 @@
     (keydown)="onModalKeydown($event)"
   >
     <div class="customModal-header">
-      <h2 id="merch-modal-title">What's this {{ selectedMerchItem()?.title }}?</h2>
+      <h2 id="merch-modal-title">What's this {{ item.title }}?</h2>
       <button
         (click)="closeMerchItemModal()"
         class="close-button"
@@ -101,31 +109,35 @@
       <div class="row p-2 d-flex justify-content-center align-items-center">
         <img
           class="merch-img-full"
-          [ngSrc]="selectedMerchItem()!.src"
-          [width]="selectedMerchItem()!.width"
-          [height]="selectedMerchItem()!.height"
-          [alt]="selectedMerchItem()!.description + ' - CRBRVS official merchandise'"
+          [ngSrc]="item.src"
+          [width]="item.width"
+          [height]="item.height"
+          [alt]="item.description + ' - CRBRVS official merchandise'"
           title="CRBRVS Official Merchandise"
           loading="lazy"
         />
       </div>
 
       <div class="row p-2">
-        <p>Description: {{ selectedMerchItem()?.description }}</p>
-        <p>Price: {{ selectedMerchItem()?.price }} RON</p>
+        <p>Description: {{ item.description }}</p>
+        <p>Price: {{ item.price }} RON</p>
         <p>Interested in this merch?</p>
       </div>
 
       <div class="row p-2">
         <div class="col-sm-6 py-2">
           <a class="button-link w-100" href="tel:+40744210017">
-            <span><i class="bi bi-telephone white-icon" aria-hidden="true"></i></span>
+            <span
+              ><i class="bi bi-telephone white-icon" aria-hidden="true"></i
+            ></span>
             <span class="ms-2"> Call me </span>
           </a>
         </div>
         <div class="col-sm-6 py-2">
           <a class="button-link w-100" href="mailto:crbrvsraps@gmail.com">
-            <span><i class="bi bi-envelope white-icon" aria-hidden="true"></i></span>
+            <span
+              ><i class="bi bi-envelope white-icon" aria-hidden="true"></i
+            ></span>
             <span class="ms-2"> E-mail me </span>
           </a>
         </div>

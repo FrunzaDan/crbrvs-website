@@ -11,9 +11,7 @@ describe('ScrollerService', () => {
     viewportScroller = { scrollToPosition: vi.fn() };
 
     TestBed.configureTestingModule({
-      providers: [
-        { provide: ViewportScroller, useValue: viewportScroller },
-      ],
+      providers: [{ provide: ViewportScroller, useValue: viewportScroller }],
     });
 
     service = TestBed.inject(ScrollerService);
