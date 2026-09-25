@@ -80,6 +80,11 @@ progress:focus-visible,
   top: 0;
 }
 
+#main-content:focus {
+  outline: none;
+  box-shadow: none;
+}
+
 .visually-hidden {
   position: absolute !important;
   width: 1px !important;

@@ -32,4 +32,13 @@ describe('PageNotFoundComponent', () => {
       }),
     );
   });
+
+  it('links back to the home page', () => {
+    fixture.detectChanges();
+
+    const link = fixture.nativeElement.querySelector(
+      'main a',
+    ) as HTMLAnchorElement;
+    expect(link.getAttribute('href')).toBe('/');
+  });
 });
