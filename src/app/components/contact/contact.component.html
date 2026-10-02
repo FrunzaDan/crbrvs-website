@@ -160,11 +160,14 @@
           </form>
           @if (isEmailModalOpen()) {
             <div
+              #emailModal
               class="send-email-modal"
               animate.leave="leaving"
               role="dialog"
+              aria-modal="true"
               aria-labelledby="email-popup-text-header"
               aria-describedby="email-popup-text-paragraph"
+              (keydown)="onModalKeydown($event)"
             >
               <h2 id="email-popup-text-header">{{ emailPopUpHeader() }}</h2>
               <p id="email-popup-text-paragraph" aria-live="polite">

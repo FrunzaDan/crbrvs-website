@@ -66,6 +66,18 @@ describe('ContactComponent', () => {
       expect(component.contactForm.message().invalid()).toBe(true);
     });
 
+    it('flags a message that is too short or too long', () => {
+      component.model.set({ ...validForm, message: 'a' });
+      expect(component.contactForm.message().errors()[0].message).toBe(
+        'Your message must be at least 2 characters.',
+      );
+
+      component.model.set({ ...validForm, message: 'a'.repeat(1001) });
+      expect(component.contactForm.message().errors()[0].message).toBe(
+        'Your message can be at most 1000 characters.',
+      );
+    });
+
     it('accepts a filled-in form', () => {
       component.model.set(validForm);
 
@@ -196,6 +208,7 @@ describe('ContactComponent', () => {
           '.send-email-modal',
         ) as HTMLElement;
         expect(popup.getAttribute('role')).toBe('dialog');
+        expect(popup.getAttribute('aria-modal')).toBe('true');
         expect(popup.getAttribute('aria-labelledby')).toBe(
           'email-popup-text-header',
         );
@@ -212,6 +225,23 @@ describe('ContactComponent', () => {
         const ok = fixture.nativeElement.querySelector(
           '.send-email-modal button',
         );
+        expect(document.activeElement).toBe(ok);
+      });
+
+      it('keeps Tab focus inside the popup', async () => {
+        await submitValidForm();
+        const ok = fixture.nativeElement.querySelector(
+          '.send-email-modal button',
+        ) as HTMLButtonElement;
+
+        const tab = new KeyboardEvent('keydown', {
+          key: 'Tab',
+          bubbles: true,
+          cancelable: true,
+        });
+        ok.dispatchEvent(tab);
+
+        expect(tab.defaultPrevented).toBe(true);
         expect(document.activeElement).toBe(ok);
       });
 

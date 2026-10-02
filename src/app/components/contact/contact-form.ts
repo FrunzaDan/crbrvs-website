@@ -1,6 +1,16 @@
-import { email, pattern, required, schema } from '@angular/forms/signals';
+import {
+  email,
+  maxLength,
+  minLength,
+  pattern,
+  required,
+  schema,
+} from '@angular/forms/signals';
 import { ContactMeForm } from '../../interfaces/contact-me-form';
 import { NOT_BLANK } from '../../shared/form-patterns';
+
+export const MESSAGE_MIN_LENGTH = 2;
+export const MESSAGE_MAX_LENGTH = 1000;
 
 export const emptyContactForm = (): ContactMeForm => ({
   name: '',
@@ -17,4 +27,10 @@ export const contactFormSchema = schema<ContactMeForm>((p) => {
 
   required(p.message, { message: 'A message is required.' });
   pattern(p.message, NOT_BLANK, { message: 'A message is required.' });
+  minLength(p.message, MESSAGE_MIN_LENGTH, {
+    message: `Your message must be at least ${MESSAGE_MIN_LENGTH} characters.`,
+  });
+  maxLength(p.message, MESSAGE_MAX_LENGTH, {
+    message: `Your message can be at most ${MESSAGE_MAX_LENGTH} characters.`,
+  });
 });

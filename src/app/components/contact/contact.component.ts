@@ -11,6 +11,7 @@ import {
 import { FormField, FormRoot, form } from '@angular/forms/signals';
 import { ContactMeForm } from '../../interfaces/contact-me-form';
 import { SendEmailService } from '../../services/send-email.service';
+import { trapTabKey } from '../../shared/focus-trap';
 import { contactFormSchema, emptyContactForm } from './contact-form';
 
 @Component({
@@ -28,6 +29,8 @@ export class ContactComponent {
   private readonly injector = inject(Injector);
   private focusBeforeModal: HTMLElement | null = null;
 
+  private readonly emailModal =
+    viewChild<ElementRef<HTMLElement>>('emailModal');
   private readonly emailOkButton =
     viewChild<ElementRef<HTMLButtonElement>>('emailOkButton');
 
@@ -80,6 +83,13 @@ export class ContactComponent {
   onEscape(): void {
     if (this.isEmailModalOpen()) {
       this.closeEmailModal();
+    }
+  }
+
+  onModalKeydown(event: KeyboardEvent): void {
+    const modal = this.emailModal()?.nativeElement;
+    if (event.key === 'Tab' && modal) {
+      trapTabKey(event, modal);
     }
   }
 }
