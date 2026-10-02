@@ -1,6 +1,5 @@
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { MerchItem } from '../../interfaces/merch-item';
 import { MerchCatalogService } from '../../services/merch-catalog.service';
 import { ScrollerService } from '../../services/scroller.service';

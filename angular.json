@@ -24,7 +24,6 @@
             "outputPath": "dist/crbrvs-website",
             "index": "src/index.html",
             "browser": "src/main.ts",
-            "polyfills": [],
             "tsConfig": "tsconfig.app.json",
             "assets": [
               {
@@ -105,11 +104,7 @@
           }
         },
         "test": {
-          "builder": "@angular/build:unit-test",
-          "options": {
-            "tsConfig": "tsconfig.spec.json",
-            "buildTarget": "::development"
-          }
+          "builder": "@angular/build:unit-test"
         }
       }
     }

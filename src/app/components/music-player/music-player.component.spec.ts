@@ -1,6 +1,5 @@
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Song } from '../../interfaces/song';
 import { MusicCatalogService } from '../../services/music-catalog.service';
 import { MusicPlayerComponent } from './music-player.component';
