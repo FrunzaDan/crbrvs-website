@@ -27,7 +27,9 @@ export class MusicComponent {
       if (!prefersReducedMotion) {
         this.teaserVideo()
           ?.nativeElement.play()
-          .catch(() => {});
+          .catch(() => {
+            // Autoplay can be blocked by the browser; the teaser then stays paused.
+          });
       }
     });
   }

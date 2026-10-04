@@ -35,12 +35,12 @@ export class ScrollerService {
     container.scrollTo({ behavior: 'smooth', left: newScrollLeft });
   }
 
-  scrollToLeft(container: Element | null, offset: number = 400): void {
+  scrollToLeft(container: Element | null, offset = 400): void {
     this.scrollHorizontally(container, offset, 'left');
   }
 
   // Scroll to the right with optional offset (default: 400)
-  scrollToRight(container: Element | null, offset: number = 400): void {
+  scrollToRight(container: Element | null, offset = 400): void {
     this.scrollHorizontally(container, offset, 'right');
   }
 }

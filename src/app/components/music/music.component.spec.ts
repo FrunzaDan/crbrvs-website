@@ -3,7 +3,6 @@ import { MusicComponent } from './music.component';
 
 describe('MusicComponent', () => {
   let fixture: ComponentFixture<MusicComponent>;
-  let component: MusicComponent;
   let playSpy: ReturnType<typeof vi.fn>;
   let matchMediaMock: ReturnType<typeof vi.fn>;
 
@@ -13,7 +12,6 @@ describe('MusicComponent', () => {
     });
 
     fixture = TestBed.createComponent(MusicComponent);
-    component = fixture.componentInstance;
   }
 
   function stubReducedMotion(matches: boolean): void {
