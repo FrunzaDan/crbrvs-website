@@ -1,9 +1,6 @@
 #background-image-contact {
-  background-image: linear-gradient(
-      -45deg,
-      rgba(255, 55, 120, 0.6),
-      rgba(1, 92, 87, 0.6)
-    ),
+  background-image:
+    linear-gradient(-45deg, rgba(255, 55, 120, 0.6), rgba(1, 92, 87, 0.6)),
     url(/assets/images/crbrvs5.webp);
   position: relative;
   top: 0;

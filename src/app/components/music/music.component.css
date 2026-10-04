@@ -26,11 +26,8 @@
 }
 
 #background-image-music {
-  background: linear-gradient(
-      -45deg,
-      rgba(255, 55, 120, 0.6),
-      rgba(1, 92, 87, 0.6)
-    ),
+  background:
+    linear-gradient(-45deg, rgba(255, 55, 120, 0.6), rgba(1, 92, 87, 0.6)),
     url(/assets/images/crbrvs2.webp);
   position: relative;
   top: 0;
@@ -42,11 +39,8 @@
 }
 
 #background-image-youtube {
-  background: linear-gradient(
-      -45deg,
-      rgba(255, 55, 120, 0.6),
-      rgba(1, 92, 87, 0.6)
-    ),
+  background:
+    linear-gradient(-45deg, rgba(255, 55, 120, 0.6), rgba(1, 92, 87, 0.6)),
     url(/assets/images/crbrvs3.webp);
   position: relative;
   top: 0;

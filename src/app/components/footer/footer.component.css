@@ -1,9 +1,6 @@
 .footer-wrapper {
-  background-image: linear-gradient(
-      -45deg,
-      rgba(226, 100, 140, 0.6),
-      rgba(1, 92, 87, 0.4)
-    ),
+  background-image:
+    linear-gradient(-45deg, rgba(226, 100, 140, 0.6), rgba(1, 92, 87, 0.4)),
     url(/assets/images/crbrvs6.webp);
   background-position: 50% 30%;
   background-repeat: no-repeat;

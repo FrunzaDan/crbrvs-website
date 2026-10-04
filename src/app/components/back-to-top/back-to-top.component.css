@@ -19,7 +19,9 @@
   pointer-events: auto;
   bottom: -3rem;
   right: -3rem;
-  transition: bottom 300ms, right 300ms;
+  transition:
+    bottom 300ms,
+    right 300ms;
 }
 
 #scroll-to-top-btn.visible {
