@@ -1,6 +1,6 @@
 # CRBRVS Website
 
-CRBRVS Website is the official website of the rapper CRBRVS (Cerga Andrei). It's a single page that brings together the artist's music, a teaser video, merch and a way to get in touch. Its main feature is a custom audio player built on the HTML `<audio>` element, with scrubbing, drag-to-seek and keyboard controls. Songs and merch are stored as static JSON files, so updating the content doesn't need code changes. The site is prerendered with Angular SSR and served as static files from Firebase Hosting, with no backend of its own.
+CRBRVS Website is the official website of the rapper CRBRVS (Cerga Andrei). It's a single page that brings together the artist's music, a teaser video, merch and a way to get in touch. Its main feature is a custom audio player built on the HTML `<audio>` element, with scrubbing, drag-to-seek and keyboard controls. Songs and merch are stored as static JSON files, so updating the content doesn't need code changes. The site is prerendered at build time and served as static files from Firebase Hosting, with no backend of its own.
 
 ---
 
@@ -18,7 +18,7 @@ CRBRVS Website is the official website of the rapper CRBRVS (Cerga Andrei). It's
 ## Tech Stack
 
 - **Frontend:** Angular 22.2 (standalone components, signals, zoneless), TypeScript, plain CSS with custom properties, a vendored subset of Bootstrap's grid/utility CSS, Bootstrap Icons
-- **Backend:** N/A. Prerendering via `@angular/ssr`, with an Express server entry for running the SSR build
+- **Backend:** N/A. Build-time prerendering via `@angular/ssr` (`outputMode: "static"`), no server
 - **Database / Storage:** N/A. Songs and merch are static JSON files in `public/assets/`
 - **Tooling & Other:** Firebase JS SDK (Analytics), EmailJS, Vitest + jsdom, Prettier, Firebase Hosting
 
@@ -54,8 +54,7 @@ To change the content, edit `public/assets/music-list.json` (title, artwork, MP3
 npm install
 npm start          # dev server on http://localhost:4207
 npm test           # Vitest unit tests
-npm run build      # production build + prerender → dist/crbrvs-website
-npm run serve:ssr:CRBRVS_Website   # run the built SSR server
+npm run build      # prerendered static build → dist/crbrvs-website/browser
 ```
 
 `npm run build` also copies the prerendered `404/index.html` to `404.html`, so Firebase Hosting can serve it as the error page.
