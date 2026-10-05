@@ -54,7 +54,7 @@ The scripts in the repo root do the usual steps for you:
 
 ```bash
 ./build.sh               # npm ci, format check, lint, build, unit tests (--skip-tests to skip them)
-./run.sh                 # dev server (runs npm ci first if node_modules is missing)
+./run.sh                 # dev server, opened in your browser (runs npm ci first if node_modules is missing)
 ```
 
 Or run the npm scripts yourself:

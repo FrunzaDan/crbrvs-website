@@ -23,5 +23,5 @@ if [[ ! -d node_modules ]]; then
   npm ci
 fi
 
-echo "==> [2/2] Starting Angular dev server (Ctrl+C stops it)..."
-npm start
+echo "==> [2/2] Starting Angular dev server and opening the browser (Ctrl+C stops it)..."
+npm start -- --open
