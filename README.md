@@ -61,7 +61,7 @@ Or run the npm scripts yourself:
 
 ```bash
 npm install
-npm start          # dev server on http://localhost:4207
+npm start          # dev server on http://localhost:4206
 npm test           # Vitest unit tests
 npm run build      # prerendered static build → dist/crbrvs-website/browser
 ```
